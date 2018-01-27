@@ -10,13 +10,13 @@ import java.util.Random;
 
 public class Supervisor {
 
-    Integer amountEntities = 300;
+    private Integer amountEntities = 300;
     private Collection<Passerby> entities;
 
-    private int worldStartX = 190;
-    private int worldEndX = 600;
-    private int worldStartY = 300;
-    private int worldEndY = 680;
+    private int worldStartX = 32;
+    private int worldEndX = 1216;
+    private int worldStartY = 32;
+    private int worldEndY = 1856;
 
     public Supervisor() {
         entities = new ArrayList<Passerby>();
@@ -53,10 +53,10 @@ public class Supervisor {
         }
 
         entity.walk(
-                new Vector2(
-                        (int) getRandomFromRange(worldStartX, worldEndX),
-                        (int) getRandomFromRange(worldStartY, worldEndY)
-                )
+            new Vector2(
+                (int) getRandomFromRange(worldStartX, worldEndX),
+                (int) getRandomFromRange(worldStartY, worldEndY)
+            )
         );
     }
 
@@ -69,7 +69,7 @@ public class Supervisor {
     private void createRandomEntity() {
         Passerby entity = new Passerby(
             getRandomFromRange(20, 40),
-            new Texture("betty.png"),
+            new Texture("buddy.png"),
             new Vector2(
                 getRandomFromRange(worldStartX, worldEndX),
                 getRandomFromRange(worldStartY, worldEndY)
@@ -81,10 +81,6 @@ public class Supervisor {
 
     private float getRandomFromRange(Integer start, Integer end) {
         Random r = new Random();
-        float random = start + r.nextFloat() * (end - start);
-
-        System.out.println(random);
-
-        return random;
+        return start + r.nextFloat() * (end - start);
     }
 }
