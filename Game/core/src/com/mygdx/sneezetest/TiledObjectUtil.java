@@ -17,11 +17,17 @@ public class TiledObjectUtil {
             } else {
                 continue;
             }
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.density = 100f;
+            fixtureDef.restitution = 0.5f;
+
             Body body;
             BodyDef bdef = new BodyDef();
             bdef.type = BodyDef.BodyType.StaticBody;
             body = world.createBody(bdef);
-            body.createFixture(shape, 1.0f);
+            body.createFixture(fixtureDef);
             shape.dispose();
         }
     }
@@ -29,12 +35,15 @@ public class TiledObjectUtil {
     private static Shape getRectangle(RectangleMapObject rectangleObject) {
         Rectangle rectangle = rectangleObject.getRectangle();
         PolygonShape polygon = new PolygonShape();
+
         Vector2 size = new Vector2((rectangle.x + rectangle.width * 0.5f),
                 (rectangle.y + rectangle.height * 0.5f));
+
         polygon.setAsBox(rectangle.width * 0.5f,
                 rectangle.height * 0.5f,
                 size,
                 0.0f);
+
         return polygon;
     }
 }
