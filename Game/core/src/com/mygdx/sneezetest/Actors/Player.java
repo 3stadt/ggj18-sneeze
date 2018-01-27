@@ -53,6 +53,20 @@ public class Player {
         stateTime += Gdx.graphics.getDeltaTime();
     }
 
+    private void setDirection(Vector2 dir){
+        if (dir.x > 0){
+            direction = RIGHT;
+        } else if (dir.x < 0){
+            direction = LEFT;
+        } else if (dir.y > 0){
+            direction = UP;
+        } else if (dir.y < 0){
+            direction = DOWN;
+        }
+
+        stateTime += Gdx.graphics.getDeltaTime();
+    }
+
     private void setAnimations(){
         animations = new Animation[4];
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / TEXTURE_WIDTH, texture.getHeight() / TEXTURE_HEIGHT);
@@ -76,6 +90,21 @@ public class Player {
 
         hitbox.x = x;
         hitbox.y = y;
+    }
+
+    public void setPos(Vector2 direction, float vel){
+        Vector2 oldPos = new Vector2(hitbox.x, hitbox.y);
+        direction.sub(oldPos);
+        setDirection(direction);
+
+        direction = direction.nor().scl(vel);
+
+
+        oldPos.add(direction);
+
+        hitbox.x = oldPos.x;
+        hitbox.y = oldPos.y;
+
     }
 
     public void draw(SpriteBatch batch) {
