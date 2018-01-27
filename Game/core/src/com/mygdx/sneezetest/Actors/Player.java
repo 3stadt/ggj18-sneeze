@@ -50,14 +50,12 @@ public class Player {
             direction = DOWN;
         }
 
-
-
         stateTime += Gdx.graphics.getDeltaTime();
     }
 
     private void setAnimations(){
         animations = new Animation[4];
-        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / TEXTURE_HEIGHT, texture.getHeight() / TEXTURE_HEIGHT);
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / TEXTURE_WIDTH, texture.getHeight() / TEXTURE_HEIGHT);
         TextureRegion[] tmp2 = new TextureRegion[TEXTURE_HEIGHT*TEXTURE_WIDTH];
 
         int index = 0;
