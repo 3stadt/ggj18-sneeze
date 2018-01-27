@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+import static com.mygdx.sneezetest.Stages.GameStage.PIXEL_TO_METER;
+
 public class TiledObjectUtil {
 
     public static void parseTiledObjectLayer(World world, MapObjects objects) {
@@ -17,11 +19,17 @@ public class TiledObjectUtil {
             } else {
                 continue;
             }
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.density = 100f;
+            fixtureDef.restitution = 0f;
+
             Body body;
             BodyDef bdef = new BodyDef();
             bdef.type = BodyDef.BodyType.StaticBody;
             body = world.createBody(bdef);
-            body.createFixture(shape, 1.0f);
+            body.createFixture(fixtureDef);
             shape.dispose();
         }
     }
@@ -29,12 +37,15 @@ public class TiledObjectUtil {
     private static Shape getRectangle(RectangleMapObject rectangleObject) {
         Rectangle rectangle = rectangleObject.getRectangle();
         PolygonShape polygon = new PolygonShape();
-        Vector2 size = new Vector2((rectangle.x + rectangle.width * 0.5f),
-                (rectangle.y + rectangle.height * 0.5f));
-        polygon.setAsBox(rectangle.width * 0.5f,
-                rectangle.height * 0.5f,
+
+        Vector2 size = new Vector2((rectangle.x * PIXEL_TO_METER + rectangle.width * PIXEL_TO_METER * 0.5f),
+                (rectangle.y * PIXEL_TO_METER + rectangle.height * PIXEL_TO_METER * 0.5f));
+
+        polygon.setAsBox(rectangle.width * PIXEL_TO_METER * 0.5f,
+                rectangle.height * PIXEL_TO_METER * 0.5f,
                 size,
                 0.0f);
+
         return polygon;
     }
 }
