@@ -46,8 +46,7 @@ public class Sneeze extends ApplicationAdapter {
         tiledMap = new TmxMapLoader().load("maps/main.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        int objectLayerId = 4;
-        MapLayer collisionObjectLayer = tiledMap.getLayers().get(objectLayerId);
+        MapLayer collisionObjectLayer = tiledMap.getLayers().get("Bump");
         objects = collisionObjectLayer.getObjects();
     }
 
@@ -85,14 +84,28 @@ public class Sneeze extends ApplicationAdapter {
         float oldPosX = hitbox.x;
         float oldPosY = hitbox.y;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            player.setPos(hitbox.x - 3, hitbox.y);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            player.setPos(hitbox.x + 3, hitbox.y);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            player.setPos(hitbox.x, hitbox.y + 3);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            player.setPos(hitbox.x, hitbox.y - 3);
+        float velocity = 4;
+        boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
+        boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+        boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
+        boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+
+        if (leftPressed && upPressed || leftPressed && downPressed || rightPressed && downPressed || rightPressed && upPressed) {
+            velocity = (float) Math.sqrt(2) * (velocity / 2);
+        }
+
+
+        if (leftPressed) {
+            player.setPos(hitbox.x - velocity, hitbox.y);
+        }
+        if (rightPressed) {
+            player.setPos(hitbox.x + velocity, hitbox.y);
+        }
+        if (upPressed) {
+            player.setPos(hitbox.x, hitbox.y + velocity);
+        }
+        if (downPressed) {
+            player.setPos(hitbox.x, hitbox.y - velocity);
         }
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
