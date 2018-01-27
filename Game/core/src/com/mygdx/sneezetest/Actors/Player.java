@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+
+import static com.mygdx.sneezetest.Stages.GameStage.PIXEL_TO_METER;
 
 public class Player {
     private static final float FRAME_TIME = 1 / 10f;
@@ -23,13 +23,13 @@ public class Player {
     private static final int RIGHT = 2;
     private static final int DOWN = 3;
 
-    private int direction;
+    public int direction;
     private Texture texture;
     private Animation<TextureRegion>[] animations;
     private float stateTime = 0f;
 
     private BodyDef def;
-    private Body body;
+    public Body body;
 
 
     public Player(Texture t, World world) {
@@ -40,18 +40,23 @@ public class Player {
         def = new BodyDef();
         def.type = BodyDef.BodyType.DynamicBody;
         def.fixedRotation = true;
-        def.position.set(300, 300);
+        def.position.set(300 * PIXEL_TO_METER, 300 * PIXEL_TO_METER);
         body = world.createBody(def);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(32 / 2, 32 / 2);
+        shape.setAsBox(32 / 2 * PIXEL_TO_METER, 32 / 2 * PIXEL_TO_METER);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.01f;
+        fixtureDef.density = 1f;
         fixtureDef.restitution = 0f;
 
         body.createFixture(fixtureDef);
+
+        MassData md = new MassData();
+        md.mass = 60f;
+        body.setMassData(md);
+
         body.setUserData(this);
         shape.dispose();
     }
@@ -99,7 +104,9 @@ public class Player {
 
         currentFrame = animations[direction].getKeyFrame(stateTime, true);
 
-        batch.draw(currentFrame, body.getPosition().x - 16, body.getPosition().y - 16);
+        //batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER);
+        batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER,
+                0.7f, 0.7f);
     }
 
     public Vector2 getHitbox() {

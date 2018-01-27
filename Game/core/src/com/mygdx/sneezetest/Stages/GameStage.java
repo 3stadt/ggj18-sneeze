@@ -16,11 +16,13 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.sneezetest.Actors.Player;
-import com.mygdx.sneezetest.CollisionHandler;
 import com.mygdx.sneezetest.Supervisor.Supervisor;
 import com.mygdx.sneezetest.TiledObjectUtil;
 
 public class GameStage extends Stage {
+    public static final float PIXEL_TO_METER = 0.02f;
+    public static final float METER_TO_PIXEL = 50.0f;
+
     private TiledMap tiledMap;
     private OrthographicCamera camera;
     private TiledMapRenderer tiledMapRenderer;
@@ -36,32 +38,30 @@ public class GameStage extends Stage {
         float h = Gdx.graphics.getHeight();
 
         supervisor = new Supervisor();
-        world = new World(new Vector2(0, 0), true);
+        world = new World(new Vector2(0, 0f), false);
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, w, h);
-        camera.position.x += 10;
-        camera.position.y += 50;
+        camera.setToOrtho(false, w * PIXEL_TO_METER, h * PIXEL_TO_METER);
+        camera.position.x += 10*PIXEL_TO_METER;
+        camera.position.y += 50*PIXEL_TO_METER;
 
         player = new Player(new Texture(Gdx.files.internal("betty.png")), world);
 
         camera.update();
 
-        tiledMap = new TmxMapLoader().load("maps/mall01.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        tiledMap = new TmxMapLoader().load("maps/mall01.tmx", new TmxMapLoader.Parameters());
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, PIXEL_TO_METER);
 
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollWalls").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollShops").getObjects());
 
-        world.setContactListener(new CollisionHandler());
         debugRenderer = new Box2DDebugRenderer();
     }
 
     @Override
     public void draw() {
-        update();
         setOpenGlOptions();
 
         batch.setProjectionMatrix(camera.combined);
@@ -77,16 +77,17 @@ public class GameStage extends Stage {
 
         camera.update();
         debugRenderer.render(world, camera.combined);
+        update();
     }
 
-    private void update(){
-        world.step(1/60f, 6, 2);
+    private void update() {
+        world.step(1 / 60f, 6, 2);
     }
 
     private void drawBatch() {
         batch.begin();
         player.draw(batch);
-        supervisor.drawEntities(batch);
+        //supervisor.drawEntities(batch);
         batch.end();
     }
 
@@ -97,37 +98,59 @@ public class GameStage extends Stage {
     }
 
     private void movePlayer() {
-        Vector2 playerVec = player.getHitbox();
+        Vector2 moveDirection = new Vector2();
+        float maxSpeed = 6.0f;
+        float factorx, factory;
 
-        float oldPosX = playerVec.x;
-        float oldPosY = playerVec.y;
-        float newPosX = oldPosX;
-        float newPosY = oldPosY;
-
-        float velocity = 4 * 40 * Gdx.graphics.getDeltaTime();
+        float velocity = 100000 * Gdx.graphics.getDeltaTime();
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
         if (leftPressed) {
-            newPosX -= velocity;
+            moveDirection.sub(1f, 0f);
         }
         if (rightPressed) {
-            newPosX += velocity;
+            moveDirection.add(1f, 0f);
         }
         if (upPressed) {
-            newPosY += velocity;
+            moveDirection.add(0f, 1f);
         }
         if (downPressed) {
-            newPosY -= velocity;
+            moveDirection.sub(0f, 1f);
         }
-        if (leftPressed || rightPressed || upPressed || downPressed)
-            player.setPos(new Vector2(newPosX, newPosY), velocity);
 
-        camera.position.y = playerVec.y;
-        camera.position.x = playerVec.x;
+        moveDirection.scl(velocity);
+
+        factorx = player.body.getLinearVelocity().x;
+        factory = player.body.getLinearVelocity().y;
+
+        if ( Math.abs(player.body.getLinearVelocity().x) >= maxSpeed) {
+            factorx = maxSpeed;
+            if (player.body.getLinearVelocity().x < 0){
+                factorx *= -1;
+            }
+        }
+        if (Math.abs(player.body.getLinearVelocity().y) >= maxSpeed) {
+            factory = maxSpeed;
+            if (player.body.getLinearVelocity().y < 0) {
+                factory *= -1;
+            }
+        }
+        player.body.setLinearVelocity(factorx, factory);
+
+        if (leftPressed || rightPressed || upPressed || downPressed) {
+            player.setPos(moveDirection);
+        } else {
+            player.stopMoving();
+            player.stand();
+        }
+
+        camera.position.y = player.getHitbox().y;
+        camera.position.x = player.getHitbox().x;
     }
+
 
     @Override
     public void dispose() {
