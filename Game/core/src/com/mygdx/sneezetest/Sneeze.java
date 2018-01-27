@@ -112,7 +112,7 @@ public class Sneeze extends ApplicationAdapter {
 
             Rectangle rectangle = rectangleObject.getRectangle();
             if (Intersector.overlaps(rectangle, hitbox)) {
-                player.setPos(oldPosX, oldPosY);
+                player.setPos(new Vector2(oldPosX, oldPosY), velocity);
             }
         }
 
