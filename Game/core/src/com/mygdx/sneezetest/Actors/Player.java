@@ -35,18 +35,22 @@ public class Player {
     }
 
     private void setDirection( float xold, float yold, float xnew, float ynew ) {
-        if (xnew < xold){
-            direction = LEFT;
-        }
-        else if (xnew > xold) {
+        Vector2 start = new Vector2(xold, yold);
+        Vector2 end = new Vector2(xnew, ynew);
+        Vector2 vdirection = new Vector2(end.sub(start));
+        vdirection.nor();
+
+        if (vdirection.x > 0){
             direction = RIGHT;
-        }
-        else if (ynew < yold){
+        } else if (vdirection.x < 0){
+            direction = LEFT;
+        } else if (vdirection.y > 0){
+            direction = UP;
+        } else if (vdirection.y < 0){
             direction = DOWN;
         }
-        else if (ynew > yold) {
-            direction = UP;
-        }
+
+
 
         stateTime += Gdx.graphics.getDeltaTime();
     }

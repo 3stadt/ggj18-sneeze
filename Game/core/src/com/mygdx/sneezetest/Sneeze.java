@@ -83,8 +83,10 @@ public class Sneeze extends ApplicationAdapter {
 
         float oldPosX = hitbox.x;
         float oldPosY = hitbox.y;
+        float newPosX = oldPosX;
+        float newPosY = oldPosY;
 
-        float velocity = 4;
+        float velocity = 4 * 40 * Gdx.graphics.getDeltaTime();
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
@@ -94,19 +96,21 @@ public class Sneeze extends ApplicationAdapter {
             velocity = (float) Math.sqrt(2) * (velocity / 2);
         }
 
-
         if (leftPressed) {
-            player.setPos(hitbox.x - velocity, hitbox.y);
+            newPosX -= velocity;
         }
         if (rightPressed) {
-            player.setPos(hitbox.x + velocity, hitbox.y);
+            newPosX += velocity;
         }
         if (upPressed) {
-            player.setPos(hitbox.x, hitbox.y + velocity);
+            newPosY += velocity;
         }
         if (downPressed) {
-            player.setPos(hitbox.x, hitbox.y - velocity);
+            newPosY -= velocity;
         }
+
+        if (leftPressed || rightPressed || upPressed || downPressed)
+        player.setPos(newPosX, newPosY);
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
