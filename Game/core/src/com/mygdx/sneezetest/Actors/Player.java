@@ -23,7 +23,7 @@ public class Player {
     private static final int RIGHT = 2;
     private static final int DOWN = 3;
 
-    public int direction;
+    private int direction;
     private Texture texture;
     private Animation<TextureRegion>[] animations;
     private float stateTime = 0f;
@@ -77,9 +77,9 @@ public class Player {
 
     private void setAnimations() {
         animations = new Animation[4];
-        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / TEXTURE_WIDTH, texture.getHeight() / TEXTURE_HEIGHT);
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / TEXTURE_WIDTH,
+                                                    texture.getHeight() / TEXTURE_HEIGHT);
         TextureRegion[] tmp2 = new TextureRegion[TEXTURE_HEIGHT * TEXTURE_WIDTH];
-
         int index = 0;
         for (int i = 0; i < TEXTURE_WIDTH; i++) {
             for (int j = 0; j < TEXTURE_HEIGHT; j++) {
@@ -104,7 +104,6 @@ public class Player {
 
         currentFrame = animations[direction].getKeyFrame(stateTime, true);
 
-        //batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER);
         batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER,
                 0.7f, 0.7f);
     }

@@ -21,7 +21,6 @@ import com.mygdx.sneezetest.TiledObjectUtil;
 
 public class GameStage extends Stage {
     public static final float PIXEL_TO_METER = 0.02f;
-    public static final float METER_TO_PIXEL = 50.0f;
 
     private TiledMap tiledMap;
     private OrthographicCamera camera;
