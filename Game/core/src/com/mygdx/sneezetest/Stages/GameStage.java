@@ -99,7 +99,7 @@ public class GameStage extends Stage {
 
     private void movePlayer() {
         Vector2 moveDirection = new Vector2();
-        float maxSpeed = 6.0f;
+        float maxSpeed = 2.5f;
         float factorx, factory;
 
         float velocity = 100000 * Gdx.graphics.getDeltaTime();
@@ -141,7 +141,7 @@ public class GameStage extends Stage {
         player.body.setLinearVelocity(factorx, factory);
 
         if (leftPressed || rightPressed || upPressed || downPressed) {
-            player.setPos(moveDirection);
+            player.pushTo(moveDirection);
         } else {
             player.stopMoving();
             player.stand();

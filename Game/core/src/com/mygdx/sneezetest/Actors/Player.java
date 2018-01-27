@@ -44,7 +44,7 @@ public class Player {
         body = world.createBody(def);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(32 / 2 * PIXEL_TO_METER, 32 / 2 * PIXEL_TO_METER);
+        shape.setAsBox(30 / 2 * PIXEL_TO_METER, 30 / 2 * PIXEL_TO_METER);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -93,7 +93,7 @@ public class Player {
         animations[RIGHT] = new Animation<TextureRegion>(FRAME_TIME, tmp2[12], tmp2[13], tmp2[14], tmp2[15]);
     }
 
-    public void setPos(Vector2 direction) {
+    public void pushTo(Vector2 direction) {
         setDirection(direction);
         body.applyForceToCenter(direction, true);
         //body.setLinearVelocity(direction);
