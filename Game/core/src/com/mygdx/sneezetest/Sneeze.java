@@ -14,6 +14,8 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.sneezetest.Actors.Player;
 import com.mygdx.sneezetest.Supervisor.Supervisor;
 
@@ -107,10 +109,6 @@ public class Sneeze extends ApplicationAdapter {
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
 
-        if (leftPressed && upPressed || leftPressed && downPressed || rightPressed && downPressed || rightPressed && upPressed) {
-            velocity = (float) Math.sqrt(2) * (velocity / 2);
-        }
-
         if (leftPressed) {
             newPosX -= velocity;
         }
@@ -123,9 +121,8 @@ public class Sneeze extends ApplicationAdapter {
         if (downPressed) {
             newPosY -= velocity;
         }
-
         if (leftPressed || rightPressed || upPressed || downPressed)
-            player.setPos(newPosX, newPosY);
+            player.setPos(new Vector2(newPosX, newPosY), velocity);
 
         camera.position.y = playerVec.y;
         camera.position.x = playerVec.x;

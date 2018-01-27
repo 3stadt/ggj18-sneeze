@@ -71,6 +71,20 @@ public class Player {
         stateTime += Gdx.graphics.getDeltaTime();
     }
 
+    private void setDirection(Vector2 dir){
+        if (dir.x > 0){
+            direction = RIGHT;
+        } else if (dir.x < 0){
+            direction = LEFT;
+        } else if (dir.y > 0){
+            direction = UP;
+        } else if (dir.y < 0){
+            direction = DOWN;
+        }
+
+        stateTime += Gdx.graphics.getDeltaTime();
+    }
+
     private void setAnimations(){
         animations = new Animation[4];
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / TEXTURE_WIDTH, texture.getHeight() / TEXTURE_HEIGHT);
@@ -99,24 +113,23 @@ public class Player {
 
     }
 
+    public void setPos(Vector2 direction, float vel){
+        Vector2 oldPos = new Vector2(def.position.x, def.position.y);
+        direction.sub(oldPos);
+        setDirection(direction);
+
+        direction = direction.nor().scl(vel);
+
+
+        oldPos.add(direction);
+
+        def.position.set(oldPos);
+    }
+
     public void draw(SpriteBatch batch) {
         TextureRegion currentFrame;
 
-        if (direction == LEFT){
-            currentFrame = animations[LEFT].getKeyFrame(stateTime, true);
-        }
-        else if (direction == UP){
-            currentFrame = animations[UP].getKeyFrame(stateTime, true);
-        }
-        else if (direction == RIGHT){
-            currentFrame = animations[RIGHT].getKeyFrame(stateTime, true);
-        }
-        else if (direction == DOWN){
-            currentFrame = animations[DOWN].getKeyFrame(stateTime, true);
-        }
-        else{
-            currentFrame = animations[DOWN].getKeyFrame(stateTime, true);
-        }
+        currentFrame = animations[direction].getKeyFrame(stateTime, true);
 
         body.setTransform(def.position.x, def.position.y, 0);
         batch.draw(currentFrame, def.position.x -16, def.position.y -16);
