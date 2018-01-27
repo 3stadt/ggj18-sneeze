@@ -10,26 +10,32 @@ import com.badlogic.gdx.physics.box2d.*;
 
 import static com.mygdx.sneezetest.Stages.GameStage.PIXEL_TO_METER;
 
-class BaseActor {
+public class BaseActor {
     private static final float FRAME_TIME = 1 / 10f;
 
     private static final int TEXTURE_WIDTH = 4;
     private static final int TEXTURE_HEIGHT = 4;
 
-    static final int LEFT = 0;
-    static final int UP = 1;
-    static final int RIGHT = 2;
-    static final int DOWN = 3;
+    public static final int LEFT = 0;
+    public static final int UP = 1;
+    public static final int RIGHT = 2;
+    public static final int DOWN = 3;
 
-    int direction;
+    public int direction;
     Texture texture;
     private Animation<TextureRegion>[] animations;
     float stateTime = 0f;
 
     public Body body;
+    BaseCollisionSensor collisionBody;
+
+    public BaseActor facedEntity = null;
 
     void createBody(World world) {
         createBody(null, world);
+    }
+    void CreateDampening(Body body){
+        body.setLinearDamping(10f);
     }
 
     void createBody(Vector2 pos, World world) {
@@ -51,15 +57,20 @@ class BaseActor {
         fixtureDef.density = 1f;
         fixtureDef.restitution = 0f;
 
-        body.createFixture(fixtureDef);
-        body.setLinearDamping(10f);
+        Fixture fixture = body.createFixture(fixtureDef);
+        CreateDampening(body);
 
         MassData md = new MassData();
         md.mass = 60f;
         body.setMassData(md);
 
-        body.setUserData(this);
+        fixture.setUserData(this);
+        collisionBody = setCollisionSensor(world);
         shape.dispose();
+    }
+
+    protected BaseCollisionSensor setCollisionSensor(World world){
+        return null;
     }
 
     public void pushTo(Vector2 direction) {
@@ -107,6 +118,11 @@ class BaseActor {
         //batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER);
         batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER,
                 0.7f, 0.7f);
+        updateCollisionSensorPos(body.getPosition(), direction);
+    }
+
+    protected void updateCollisionSensorPos(Vector2 position, int direction) {
+        collisionBody.updatePosition(position, direction);
     }
 
     public Vector2 getHitbox() {

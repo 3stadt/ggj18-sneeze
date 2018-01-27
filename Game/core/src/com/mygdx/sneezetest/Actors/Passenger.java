@@ -21,6 +21,9 @@ public class Passenger extends BaseActor {
     private Vector2 target;
 
     private boolean locked = false;
+    private float walkTime = 0.0f;
+    private boolean sick;
+
 
     public Passenger(Texture t, World world, Vector2 pos, Rectangle mapsize) {
         mapSize = mapsize;
@@ -47,8 +50,12 @@ public class Passenger extends BaseActor {
     }
 
     public void continueAction() {
-        if(isNearTarget()){
+        walkTime += Gdx.graphics.getDeltaTime();
+        if (isNearTarget() || walkTime > 10) {
+            locked = false;
+            walkTime = 0;
             target = generateTarget(0);
+            return;
         }
         pushTo(generateForceVector());
     }
@@ -116,7 +123,7 @@ public class Passenger extends BaseActor {
         Vector2 dir = new Vector2();
         dir.x = target.x - pos.x;
         dir.y = target.y - pos.y;
-        return dir.nor().scl(400f);
+        return dir.nor().scl(1200f);
     }
 
     public boolean isLocked() {
@@ -126,5 +133,14 @@ public class Passenger extends BaseActor {
     private float getRandomFromRange(Integer start, Integer end) {
         Random r = new Random();
         return (start + r.nextFloat() * (end - start)) * GameStage.PIXEL_TO_METER;
+    }
+
+    public void getHealed(){
+        sick = false;
+    }
+
+    @Override
+    protected BaseCollisionSensor setCollisionSensor(World world) {
+        return new BaseCollisionSensor(world, this, 15, 10);
     }
 }
