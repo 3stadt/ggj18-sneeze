@@ -48,9 +48,8 @@ public class Player {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.1f;
-        fixtureDef.restitution = 0.5f;
-        body.setLinearDamping(50f);
+        fixtureDef.density = 0.01f;
+        fixtureDef.restitution = 0f;
 
         body.createFixture(fixtureDef);
         body.setUserData(this);
@@ -109,5 +108,13 @@ public class Player {
 
     public void dispose() {
         texture.dispose();
+    }
+
+    public void stopMoving() {
+        body.setLinearVelocity(0, 0);
+    }
+
+    public void stand() {
+        stateTime = 0;
     }
 }
