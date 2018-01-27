@@ -4,6 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -21,17 +28,28 @@ public class Player {
 
     private int direction;
     private Texture texture;
-    private Rectangle hitbox;
     private Animation<TextureRegion>[] animations;
     private float stateTime = 0f;
 
-    public Player(Texture t) {
+    private BodyDef def;
+    private Body body;
+
+    public Player(Texture t, World world) {
         texture = t;
-        hitbox = new Rectangle();
         setPos(300, 300);
-        hitbox.width = 32;
-        hitbox.height = 32;
+
         setAnimations();
+
+        def = new BodyDef();
+        def.type = BodyDef.BodyType.DynamicBody;
+        def.fixedRotation = true;
+        def.position.set(300, 300);
+        body = world.createBody(def);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(32 / 2, 32 / 2);
+        body.createFixture(shape, 1.0f);
+        shape.dispose();
     }
 
     private void setDirection( float xold, float yold, float xnew, float ynew ) {
@@ -72,10 +90,13 @@ public class Player {
     }
 
     public void setPos(float x, float y) {
-        setDirection(hitbox.x, hitbox.y, x, y);
+        if (null != def)
+        {
+            setDirection(def.position.x, def.position.y, x, y);
 
-        hitbox.x = x;
-        hitbox.y = y;
+            def.position.set(x, y);
+        }
+
     }
 
     public void draw(SpriteBatch batch) {
@@ -97,11 +118,17 @@ public class Player {
             currentFrame = animations[DOWN].getKeyFrame(stateTime, true);
         }
 
-        batch.draw(currentFrame, hitbox.x, hitbox.y);
+        body.setTransform(def.position.x, def.position.y, 0);
+        batch.draw(currentFrame, def.position.x -16, def.position.y -16);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(32 / 2, 32 / 2);
+        body.createFixture(shape, 1.0f);
+        shape.dispose();
     }
 
-    public Rectangle getHitbox(){
-        return hitbox;
+    public Vector2 getHitbox() {
+        return def.position;
     }
 
     public void dispose() {
