@@ -7,25 +7,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.sneezetest.Actors.Player;
 
-import java.util.Iterator;
-
 public class Sneeze extends ApplicationAdapter {
-    private static final int VELOCITY_ITERATIONS = 1;
-    private static final int POSITION_ITERATIONS = 1;
     private TiledMap tiledMap;
     private OrthographicCamera camera;
     private TiledMapRenderer tiledMapRenderer;
@@ -33,9 +24,6 @@ public class Sneeze extends ApplicationAdapter {
     private Player player;
     private World world;
     private Box2DDebugRenderer debugRenderer;
-    private float accumulator = 0;
-    private final float TIME_STEP = 1;
-    private float ppt = 32f;
 
     @Override
     public void create() {
@@ -59,6 +47,8 @@ public class Sneeze extends ApplicationAdapter {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
+        TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollWalls").getObjects());
+        TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollShops").getObjects());
 
         world.setContactListener(new CollisionHandler());
         debugRenderer = new Box2DDebugRenderer();

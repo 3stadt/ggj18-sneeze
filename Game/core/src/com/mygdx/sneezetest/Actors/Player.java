@@ -30,10 +30,10 @@ public class Player {
 
     public void setPos(float x, float y) {
         def.position.set(x, y);
-        body.applyForceToCenter(x, y, true);
     }
 
     public void draw(SpriteBatch batch) {
+        body.setTransform(def.position.x, def.position.y, 0);
         batch.draw(texture, def.position.x - 16, def.position.y - 16);
     }
 
