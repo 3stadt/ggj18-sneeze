@@ -110,21 +110,7 @@ public class Player {
     public void draw(SpriteBatch batch) {
         TextureRegion currentFrame;
 
-        if (direction == LEFT){
-            currentFrame = animations[LEFT].getKeyFrame(stateTime, true);
-        }
-        else if (direction == UP){
-            currentFrame = animations[UP].getKeyFrame(stateTime, true);
-        }
-        else if (direction == RIGHT){
-            currentFrame = animations[RIGHT].getKeyFrame(stateTime, true);
-        }
-        else if (direction == DOWN){
-            currentFrame = animations[DOWN].getKeyFrame(stateTime, true);
-        }
-        else{
-            currentFrame = animations[DOWN].getKeyFrame(stateTime, true);
-        }
+        currentFrame = animations[direction].getKeyFrame(stateTime, true);
 
         batch.draw(currentFrame, hitbox.x, hitbox.y);
     }
