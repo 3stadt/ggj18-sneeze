@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.sneezetest.Actors.Player;
+import com.mygdx.sneezetest.Supervisor.Supervisor;
 
 public class Sneeze extends ApplicationAdapter {
     private TiledMap tiledMap;
@@ -22,6 +23,7 @@ public class Sneeze extends ApplicationAdapter {
     private TiledMapRenderer tiledMapRenderer;
     private SpriteBatch batch;
     private Player player;
+    private Supervisor supervisor;
     private World world;
     private Box2DDebugRenderer debugRenderer;
 
@@ -30,9 +32,9 @@ public class Sneeze extends ApplicationAdapter {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
+        //supervisor = new Supervisor();
         world = new World(new Vector2(0, 0), true);
         batch = new SpriteBatch();
-
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, w, h);
@@ -66,6 +68,8 @@ public class Sneeze extends ApplicationAdapter {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
+        //supervisor.loop();
+
         drawBatch();
 
         camera.update();
@@ -79,6 +83,7 @@ public class Sneeze extends ApplicationAdapter {
     private void drawBatch() {
         batch.begin();
         player.draw(batch);
+        //supervisor.drawEntities(batch);
         batch.end();
     }
 
