@@ -16,15 +16,15 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.sneezetest.Actors.Player;
 
 public class Sneeze extends ApplicationAdapter {
     private TiledMap tiledMap;
-    private Texture bettyImage;
-    private Rectangle betty;
     private OrthographicCamera camera;
     private TiledMapRenderer tiledMapRenderer;
     private SpriteBatch batch;
     private MapObjects objects;
+    private Player player;
 
     @Override
     public void create() {
@@ -39,12 +39,7 @@ public class Sneeze extends ApplicationAdapter {
         camera.position.x += 10;
         camera.position.y += 50;
 
-        bettyImage = new Texture(Gdx.files.internal("betty.png"));
-        betty = new Rectangle();
-        betty.x = camera.position.x;
-        betty.y = camera.position.y;
-        betty.width = 32;
-        betty.height = 32;
+        player = new Player(new Texture(Gdx.files.internal("betty.png")));
 
         camera.update();
 
@@ -58,48 +53,63 @@ public class Sneeze extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        setOpenGlOptions();
 
         batch.setProjectionMatrix(camera.combined);
 
-        float oldPosX = betty.x;
-        float oldPosY = betty.y;
+        movePlayer();
+
+        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.render();
+
+        drawBatch();
+
+        camera.update();
+    }
+
+    private void drawBatch() {
+        batch.begin();
+        player.draw(batch);
+        batch.end();
+    }
+
+    private void setOpenGlOptions() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    private void movePlayer() {
+        Rectangle hitbox = player.getHitbox();
+
+        float oldPosX = hitbox.x;
+        float oldPosY = hitbox.y;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            betty.x -= 200 * Gdx.graphics.getDeltaTime();
+            player.setPos(hitbox.x - 3, hitbox.y);
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            betty.x += 200 * Gdx.graphics.getDeltaTime();
+            player.setPos(hitbox.x + 3, hitbox.y);
         } else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            betty.y += 200 * Gdx.graphics.getDeltaTime();
+            player.setPos(hitbox.x, hitbox.y + 3);
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            betty.y -= 200 * Gdx.graphics.getDeltaTime();
+            player.setPos(hitbox.x, hitbox.y - 3);
         }
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
 
             Rectangle rectangle = rectangleObject.getRectangle();
-            if (Intersector.overlaps(rectangle, betty)) {
-                betty.x = oldPosX;
-                betty.y = oldPosY;
+            if (Intersector.overlaps(rectangle, hitbox)) {
+                player.setPos(oldPosX, oldPosY);
             }
         }
 
-        camera.position.y = betty.y;
-        camera.position.x = betty.x;
-
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
-        batch.begin();
-        batch.draw(bettyImage, betty.x, betty.y);
-        batch.end();
-        camera.update();
+        camera.position.y = hitbox.y;
+        camera.position.x = hitbox.x;
     }
 
     @Override
     public void dispose() {
-        bettyImage.dispose();
+        player.dispose();
         tiledMap.dispose();
         batch.dispose();
     }
