@@ -48,9 +48,9 @@ public class Player {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 100f;
+        fixtureDef.density = 0.1f;
         fixtureDef.restitution = 0.5f;
-        body.setLinearDamping(100f);
+        body.setLinearDamping(50f);
 
         body.createFixture(fixtureDef);
         body.setUserData(this);
@@ -89,15 +89,10 @@ public class Player {
         animations[RIGHT] = new Animation<TextureRegion>(FRAME_TIME, tmp2[12], tmp2[13], tmp2[14], tmp2[15]);
     }
 
-    public void setPos(Vector2 direction, float vel) {
-        Vector2 pos = body.getPosition();
-        direction.sub(pos);
+    public void setPos(Vector2 direction) {
         setDirection(direction);
-
-        direction = direction.nor().scl(vel);
-        pos.add(direction);
-
-        body.setLinearVelocity(pos);
+        body.applyForceToCenter(direction, true);
+        //body.setLinearVelocity(direction);
     }
 
     public void draw(SpriteBatch batch) {
