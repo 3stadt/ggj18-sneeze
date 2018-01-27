@@ -21,7 +21,6 @@ import com.mygdx.sneezetest.TiledObjectUtil;
 
 public class GameStage extends Stage {
     public static final float PIXEL_TO_METER = 0.02f;
-    public static final float METER_TO_PIXEL = 50.0f;
 
     private TiledMap tiledMap;
     private OrthographicCamera camera;
@@ -99,14 +98,20 @@ public class GameStage extends Stage {
 
     private void movePlayer() {
         Vector2 moveDirection = new Vector2();
-        float maxSpeed = 2.5f;
-        float factorx, factory;
 
-        float velocity = 100000 * Gdx.graphics.getDeltaTime();
+        float maxSpeed = 2.5f;
+        float velocity = 1000000 * Gdx.graphics.getDeltaTime();
+
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean diagonal = (leftPressed  && upPressed)   ||
+                           (leftPressed  && downPressed) ||
+                           (rightPressed && upPressed)   ||
+                           (rightPressed && downPressed);
+
+        player.body.setLinearVelocity(0, 0);
 
         if (leftPressed) {
             moveDirection.sub(1f, 0f);
@@ -121,24 +126,11 @@ public class GameStage extends Stage {
             moveDirection.sub(0f, 1f);
         }
 
-        moveDirection.scl(velocity);
-
-        factorx = player.getBody().getLinearVelocity().x;
-        factory = player.getBody().getLinearVelocity().y;
-
-        if ( Math.abs(player.getBody().getLinearVelocity().x) >= maxSpeed) {
-            factorx = maxSpeed;
-            if (player.getBody().getLinearVelocity().x < 0){
-                factorx *= -1;
-            }
+        if (diagonal){
+            moveDirection.scl((float) (velocity / Math.sqrt(2)));
+        } else {
+            moveDirection.scl(velocity);
         }
-        if (Math.abs(player.getBody().getLinearVelocity().y) >= maxSpeed) {
-            factory = maxSpeed;
-            if (player.getBody().getLinearVelocity().y < 0) {
-                factory *= -1;
-            }
-        }
-        player.getBody().setLinearVelocity(factorx, factory);
 
         if (leftPressed || rightPressed || upPressed || downPressed) {
             player.pushTo(moveDirection);

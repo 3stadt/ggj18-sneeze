@@ -26,7 +26,7 @@ class BaseActor {
     private Animation<TextureRegion>[] animations;
     private float stateTime = 0f;
 
-    private Body body;
+    public Body body;
 
     void createBody(World world) {
         createBody(null, world);
