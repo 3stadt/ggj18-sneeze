@@ -37,8 +37,8 @@ public class GameStage extends Stage {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
-        supervisor = new Supervisor();
         world = new World(new Vector2(0, 0f), false);
+        supervisor = new Supervisor(world);
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
@@ -87,7 +87,7 @@ public class GameStage extends Stage {
     private void drawBatch() {
         batch.begin();
         player.draw(batch);
-        //supervisor.drawEntities(batch);
+        supervisor.drawEntities(batch);
         batch.end();
     }
 
@@ -123,22 +123,22 @@ public class GameStage extends Stage {
 
         moveDirection.scl(velocity);
 
-        factorx = player.body.getLinearVelocity().x;
-        factory = player.body.getLinearVelocity().y;
+        factorx = player.getBody().getLinearVelocity().x;
+        factory = player.getBody().getLinearVelocity().y;
 
-        if ( Math.abs(player.body.getLinearVelocity().x) >= maxSpeed) {
+        if ( Math.abs(player.getBody().getLinearVelocity().x) >= maxSpeed) {
             factorx = maxSpeed;
-            if (player.body.getLinearVelocity().x < 0){
+            if (player.getBody().getLinearVelocity().x < 0){
                 factorx *= -1;
             }
         }
-        if (Math.abs(player.body.getLinearVelocity().y) >= maxSpeed) {
+        if (Math.abs(player.getBody().getLinearVelocity().y) >= maxSpeed) {
             factory = maxSpeed;
-            if (player.body.getLinearVelocity().y < 0) {
+            if (player.getBody().getLinearVelocity().y < 0) {
                 factory *= -1;
             }
         }
-        player.body.setLinearVelocity(factorx, factory);
+        player.getBody().setLinearVelocity(factorx, factory);
 
         if (leftPressed || rightPressed || upPressed || downPressed) {
             player.pushTo(moveDirection);
