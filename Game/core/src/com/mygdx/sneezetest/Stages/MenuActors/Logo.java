@@ -12,8 +12,8 @@ public class Logo extends Actor {
     private Vector2 pos;
 
     public Logo() {
-        itemTexture = new Texture(Gdx.files.internal("game_logo.png"));
-        pos = new Vector2(640 - itemTexture.getWidth() / 2, 300);
+        itemTexture = new Texture(Gdx.files.internal("logo_small.png"));
+        pos = new Vector2((1280 / 2 - itemTexture.getWidth() / 2) - 50, 300);
         setBounds(pos.x, pos.y, itemTexture.getWidth(), itemTexture.getHeight());
     }
 
