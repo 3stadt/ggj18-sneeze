@@ -53,10 +53,9 @@ public class GameStage extends Stage {
 
         camera.update();
 
-        tiledMap = new TmxMapLoader().load("maps/mall01.tmx", new TmxMapLoader.Parameters());
+        tiledMap = new TmxMapLoader().load("maps/mall02.tmx", new TmxMapLoader.Parameters());
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, PIXEL_TO_METER);
 
-        TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollWalls").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollShops").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
