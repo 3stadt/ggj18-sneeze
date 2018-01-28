@@ -1,12 +1,12 @@
 package com.mygdx.sneezetest.Supervisor;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.sneezetest.Actors.Passenger;
-import com.mygdx.sneezetest.Actors.Passerby;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,18 +15,18 @@ import java.util.Random;
 public class Supervisor {
 
     private final World world;
-    private Integer amountEntities = 60;
     private Collection<Passenger> entities;
 
-    private int worldStartX = 32;
-    private int worldEndX = 1216;
-    private int worldStartY = 32;
-    private int worldEndY = 1856;
+    Rectangle mapSize;
 
-    public Supervisor(World w) {
+    public Supervisor(World w, MapProperties prop) {
         world = w;
+        mapSize = new Rectangle();
+        mapSize.x = 32;
+        mapSize.y = 32;
+        mapSize.width = prop.get("width", Integer.class) * 32 - 32;
+        mapSize.height = prop.get("height", Integer.class) * 32 -32;
         entities = new ArrayList<Passenger>();
-        createEntities(amountEntities);
     }
 
     public void loop() {
@@ -54,15 +54,10 @@ public class Supervisor {
             return;
         }
 
-        entity.walk(
-                new Vector2(
-                        (int) getRandomFromRange(worldStartX, worldEndX),
-                        (int) getRandomFromRange(worldStartY, worldEndY)
-                )
-        );
+        entity.walk();
     }
 
-    private void createEntities(Integer amountEntities) {
+    public void createEntities(Integer amountEntities) {
         for (int i = 0; i < amountEntities; i++) {
             createRandomEntity();
         }
@@ -73,9 +68,10 @@ public class Supervisor {
                 new Texture("betty.png"),
                 world,
                 new Vector2(
-                        getRandomFromRange(worldStartX, worldEndX),
-                        getRandomFromRange(worldStartY, worldEndY)
-                )
+                        getRandomFromRange((int) mapSize.x, (int) mapSize.width),
+                        getRandomFromRange((int) mapSize.y, (int) mapSize.height)
+                ),
+                mapSize
         );
 
         entities.add(entity);

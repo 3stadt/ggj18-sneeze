@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -37,7 +38,7 @@ public class GameStage extends Stage {
         float h = Gdx.graphics.getHeight();
 
         world = new World(new Vector2(0, 0f), false);
-        supervisor = new Supervisor(world);
+
         batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
@@ -51,6 +52,9 @@ public class GameStage extends Stage {
 
         tiledMap = new TmxMapLoader().load("maps/mall01.tmx", new TmxMapLoader.Parameters());
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, PIXEL_TO_METER);
+
+        supervisor = new Supervisor(world, tiledMap.getProperties());
+        supervisor.createEntities(20);
 
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollWalls").getObjects());
@@ -99,7 +103,6 @@ public class GameStage extends Stage {
     private void movePlayer() {
         Vector2 moveDirection = new Vector2();
 
-        float maxSpeed = 2.5f;
         float velocity = 1000000 * Gdx.graphics.getDeltaTime();
 
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
