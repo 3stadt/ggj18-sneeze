@@ -24,6 +24,8 @@ public class Supervisor {
     private int num_sick_percent = 5;
     private int spawned_sick = 0;
     public static int num_sick = 0;
+    private int badBuddy = getRandomIntFromRange(1, 10);
+    boolean badBuddySpawned = false;
 
     Rectangle mapSize;
 
@@ -70,18 +72,32 @@ public class Supervisor {
 
     public void createEntities(Integer amountEntities) {
         num_sick = (amountEntities * num_sick_percent / 100);
-
+        Integer curTex = 0;
         for (int i = 0; i < amountEntities; i++) {
-            createRandomEntity();
+
+            curTex++;
+            if (curTex.equals(badBuddy) && badBuddySpawned) {
+                curTex++;
+            } else if (curTex.equals(badBuddy)) {
+                badBuddySpawned = true;
+            }
+            if (curTex > 10) {
+                curTex = 1;
+            }
+
+            createRandomEntity(curTex, badBuddy);
         }
     }
 
-    private void createRandomEntity() {
+    private void createRandomEntity(int texNum, int badBuddyTexNum) {
+        boolean isBadBuddy = texNum == badBuddyTexNum;
         Passenger entity = new Passenger(
-                new Texture("betty.png"),
+                new Texture(String.format("buddy/%02d.png", texNum)),
+                new Texture(String.format("buddy/%02dsick.png", texNum)),
                 world,
                 getSpawnPos(),
-                mapSize
+                mapSize,
+                isBadBuddy
         );
         if (spawned_sick < num_sick){
             entity.sick = true;
@@ -101,5 +117,10 @@ public class Supervisor {
     private float getRandomFromRange(Integer start, Integer end) {
         Random r = new Random();
         return start + r.nextFloat() * (end - start);
+    }
+
+    private int getRandomIntFromRange(Integer min, Integer max) {
+        Random r = new Random();
+        return r.nextInt(max - min + 1) + min;
     }
 }
