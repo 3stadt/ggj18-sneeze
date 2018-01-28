@@ -1,8 +1,12 @@
 package com.mygdx.sneezetest.Supervisor;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.sneezetest.Actors.Passenger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,70 +14,64 @@ import java.util.Random;
 
 public class Supervisor {
 
-    Integer amountEntities = 300;
-    private Collection<Passerby> entities;
+    private final World world;
+    private Collection<Passenger> entities;
 
-    private int worldStartX = 190;
-    private int worldEndX = 600;
-    private int worldStartY = 300;
-    private int worldEndY = 680;
+    Rectangle mapSize;
 
-    public Supervisor() {
-        entities = new ArrayList<Passerby>();
-        createEntities(amountEntities);
+    public Supervisor(World w, MapProperties prop) {
+        world = w;
+        mapSize = new Rectangle();
+        mapSize.x = 32;
+        mapSize.y = 32;
+        mapSize.width = prop.get("width", Integer.class) * 32 - 32;
+        mapSize.height = prop.get("height", Integer.class) * 32 -32;
+        entities = new ArrayList<Passenger>();
     }
 
     public void loop() {
-        for(Passerby e : entities) {
-            String action = e.decide();
+        for (Passenger e : entities) {
+            int action = e.decide();
 
-            if (action == "continue") {
+            if (action == Passenger.CONTINUE) {
                 e.continueAction();
             }
 
-            if (action == "walk") {
+            if (action == Passenger.WALK) {
                 walkEntity(e);
             }
-
-            if (action == "reinfect") {
-                //reinfect()
-            }
         }
     }
 
-    public void drawEntities(Batch batch) {
-        for(Passerby e : entities) {
-            batch.draw(e.texture, e.rect.x, e.rect.y);
+    public void drawEntities(SpriteBatch batch) {
+        for (Passenger e : entities) {
+            e.draw(batch);
         }
     }
 
-    private void walkEntity(Passerby entity) {
+    private void walkEntity(Passenger entity) {
         if (entity.isLocked()) {
             return;
         }
 
-        entity.walk(
-                new Vector2(
-                        (int) getRandomFromRange(worldStartX, worldEndX),
-                        (int) getRandomFromRange(worldStartY, worldEndY)
-                )
-        );
+        entity.walk();
     }
 
-    private void createEntities(Integer amountEntities) {
+    public void createEntities(Integer amountEntities) {
         for (int i = 0; i < amountEntities; i++) {
             createRandomEntity();
         }
     }
 
     private void createRandomEntity() {
-        Passerby entity = new Passerby(
-            getRandomFromRange(20, 40),
-            new Texture("betty.png"),
-            new Vector2(
-                getRandomFromRange(worldStartX, worldEndX),
-                getRandomFromRange(worldStartY, worldEndY)
-            )
+        Passenger entity = new Passenger(
+                new Texture("betty.png"),
+                world,
+                new Vector2(
+                        getRandomFromRange((int) mapSize.x, (int) mapSize.width),
+                        getRandomFromRange((int) mapSize.y, (int) mapSize.height)
+                ),
+                mapSize
         );
 
         entities.add(entity);
@@ -81,10 +79,6 @@ public class Supervisor {
 
     private float getRandomFromRange(Integer start, Integer end) {
         Random r = new Random();
-        float random = start + r.nextFloat() * (end - start);
-
-        System.out.println(random);
-
-        return random;
+        return start + r.nextFloat() * (end - start);
     }
 }

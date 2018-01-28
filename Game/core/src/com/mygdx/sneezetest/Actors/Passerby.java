@@ -1,4 +1,4 @@
-package com.mygdx.sneezetest.Supervisor;
+package com.mygdx.sneezetest.Actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,8 +11,8 @@ public class Passerby {
     boolean sick = false;
 
     Vector2 walkTarget;
-    Texture texture;
-    Rectangle rect;
+    public Texture texture;
+    public Rectangle rect;
 
     public Passerby(float s, Texture t, Vector2 pos) {
         speed = s;
