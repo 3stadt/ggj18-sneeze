@@ -115,7 +115,6 @@ public class BaseActor {
 
         currentFrame = animations[direction].getKeyFrame(stateTime, true);
 
-        //batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER);
         batch.draw(currentFrame, body.getPosition().x - 16 * PIXEL_TO_METER, body.getPosition().y - 16 * PIXEL_TO_METER,
                 0.7f, 0.7f);
         updateCollisionSensorPos(body.getPosition(), direction);

@@ -1,6 +1,7 @@
 package com.mygdx.sneezetest.Actors;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -17,13 +18,14 @@ public class Passenger extends BaseActor {
     public static final int CONTINUE = 0;
     public static final int WALK = 1;
     public static final int IDLE = 2;
+    public static final int SNEEZE = 3;
     private final Array<Body> bodies;
     private Rectangle mapSize;
     private Vector2 target;
 
     private boolean locked = false;
     private float walkTime = 0.0f;
-    private boolean sick;
+    public boolean sick = false;
 
 
     public Passenger(Texture t, World world, Vector2 pos, Rectangle mapsize) {
@@ -45,6 +47,10 @@ public class Passenger extends BaseActor {
 
         if (rand == 1) {
             return WALK;
+        }
+
+        if (rand == 2 && sick) {
+            return SNEEZE;
         }
 
         return IDLE;
@@ -139,6 +145,19 @@ public class Passenger extends BaseActor {
     public void getHealed(){
         sick = false;
         Hud.INFECTED--;
+    }
+
+    public void getSneezedAt(){
+        sick = true;
+    }
+
+    public void sneeze(){
+        if (facedEntity != null && facedEntity instanceof Passenger){
+            System.out.println("Sneeze");
+            ((Passenger) facedEntity).getSneezedAt();
+            Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneeze.wav"));
+            sound.play(1.0f);
+        }
     }
 
     @Override

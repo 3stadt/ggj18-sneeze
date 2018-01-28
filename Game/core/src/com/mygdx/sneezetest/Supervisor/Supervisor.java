@@ -21,6 +21,9 @@ public class Supervisor {
 
     private final World world;
     private Collection<Passenger> entities;
+    private int num_sick_percent = 5;
+    private int spawned_sick = 0;
+    public static int num_sick = 0;
 
     Rectangle mapSize;
 
@@ -45,6 +48,9 @@ public class Supervisor {
             if (action == Passenger.WALK) {
                 walkEntity(e);
             }
+            if (action == Passenger.SNEEZE) {
+                e.sneeze();
+            }
         }
     }
 
@@ -63,6 +69,8 @@ public class Supervisor {
     }
 
     public void createEntities(Integer amountEntities) {
+        num_sick = (amountEntities * num_sick_percent / 100);
+
         for (int i = 0; i < amountEntities; i++) {
             createRandomEntity();
         }
@@ -75,6 +83,10 @@ public class Supervisor {
                 getSpawnPos(),
                 mapSize
         );
+        if (spawned_sick < num_sick){
+            entity.sick = true;
+            spawned_sick++;
+        }
 
         entities.add(entity);
     }
