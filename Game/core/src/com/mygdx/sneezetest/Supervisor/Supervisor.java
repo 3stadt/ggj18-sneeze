@@ -81,7 +81,7 @@ public class Supervisor {
             } else if (curTex.equals(badBuddy)) {
                 badBuddySpawned = true;
             }
-            if (curTex > 10) {
+            if (curTex > 20) {
                 curTex = 1;
             }
 
