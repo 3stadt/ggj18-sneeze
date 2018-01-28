@@ -8,8 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.sneezetest.ScreenInfo.Hud;
 
 public class Player extends BaseActor{
-    public boolean isPassengerInFront = false;
-    public Passenger passengerInFront;
+    public static float syringeCooldown = 0.0f;
 
     public Player(Texture t, World world) {
         texture = t;
@@ -28,12 +27,17 @@ public class Player extends BaseActor{
     }
 
     public void heal() {
-        if (facedEntity != null){
-            if ( ((Passenger) facedEntity).direction == direction) {
-                ((Passenger) facedEntity).getHealed();
-                Sound sound = Gdx.audio.newSound(Gdx.files.internal("healing.ogg"));
-                sound.play(1.0f);
-                Hud.IS_SYRINGE_USED = true;
+        if ((int) syringeCooldown == 0) {
+            if (facedEntity != null) {
+                if (((Passenger) facedEntity).direction == direction) {
+                    if (((Passenger) facedEntity).sick) {
+                        ((Passenger) facedEntity).getHealed();
+                        Sound sound = Gdx.audio.newSound(Gdx.files.internal("healing.ogg"));
+                        sound.play(1.0f);
+                        Hud.IS_SYRINGE_USED = true;
+                        syringeCooldown = 5.0f;
+                    }
+                }
             }
         }
     }

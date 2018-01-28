@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.sneezetest.ScreenInfo.Hud;
 import com.mygdx.sneezetest.Stages.GameStage;
 import com.mygdx.sneezetest.StageHandler.StageHandler;
+import com.mygdx.sneezetest.Supervisor.Supervisor;
 
 import java.util.Random;
 
@@ -181,14 +182,20 @@ public class Passenger extends BaseActor {
     }
 
     public void setHealed() {
-        sick = false;
-        texture = normalTex;
-        setAnimations();
+        if (sick){
+            Supervisor.current_sick--;
+            sick = false;
+            texture = normalTex;
+            setAnimations();
+        }
     }
     public void setSick() {
-        sick = true;
-        texture = sickTex;
-        setAnimations();
+        if (!sick) {
+            sick = true;
+            Supervisor.current_sick++;
+            texture = sickTex;
+            setAnimations();
+        }
     }
 
     public void getSneezedAt() {
@@ -197,15 +204,13 @@ public class Passenger extends BaseActor {
 
     public void sneeze() {
         if (facedEntity != null && facedEntity instanceof Passenger) {
-            System.out.println("Sneeze");
             ((Passenger) facedEntity).getSneezedAt();
-            Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneeze.wav"));
-            sound.play(1.0f);
         }
     }
 
     public void getKilled()
     {
+        getHealed();
         GameStage gameStage = (GameStage) StageHandler.getActiveStage();
         gameStage.supervisor.removeEntity(this);
 
