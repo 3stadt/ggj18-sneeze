@@ -52,6 +52,7 @@ class BaseActor {
         fixtureDef.restitution = 0f;
 
         body.createFixture(fixtureDef);
+        body.setLinearDamping(10f);
 
         MassData md = new MassData();
         md.mass = 60f;
