@@ -1,5 +1,6 @@
 package com.mygdx.sneezetest.Supervisor;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.sneezetest.Actors.Passenger;
+import com.mygdx.sneezetest.Actors.Terrorist;
 import com.mygdx.sneezetest.Stages.GameStage;
 
 import java.awt.geom.RectangularShape;
@@ -53,6 +55,10 @@ public class Supervisor {
             if (action == Passenger.SNEEZE) {
                 e.sneeze();
             }
+
+            if (action == Passenger.REINFECT) {
+                e.reinfect();
+            }
         }
     }
 
@@ -91,14 +97,26 @@ public class Supervisor {
 
     private void createRandomEntity(int texNum, int badBuddyTexNum) {
         boolean isBadBuddy = texNum == badBuddyTexNum;
-        Passenger entity = new Passenger(
+        Passenger entity;
+
+        if (isBadBuddy) {
+            entity = new Terrorist(
                 new Texture(String.format("buddy/%02d.png", texNum)),
                 new Texture(String.format("buddy/%02dsick.png", texNum)),
                 world,
                 getSpawnPos(),
-                mapSize,
-                isBadBuddy
-        );
+                mapSize
+            );
+        } else {
+            entity = new Passenger(
+                new Texture(String.format("buddy/%02d.png", texNum)),
+                new Texture(String.format("buddy/%02dsick.png", texNum)),
+                world,
+                getSpawnPos(),
+                mapSize
+            );
+        }
+
         if (spawned_sick < num_sick){
             entity.setSick();
             spawned_sick++;
@@ -122,5 +140,13 @@ public class Supervisor {
     private int getRandomIntFromRange(Integer min, Integer max) {
         Random r = new Random();
         return r.nextInt(max - min + 1) + min;
+    }
+
+    private Vector2 createRandomVector()
+    {
+        return new Vector2(
+                getRandomFromRange((int) mapSize.x, (int) mapSize.width),
+                getRandomFromRange((int) mapSize.y, (int) mapSize.height)
+        );
     }
 }

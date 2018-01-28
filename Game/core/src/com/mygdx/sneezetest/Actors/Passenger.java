@@ -8,11 +8,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.sneezetest.ScreenInfo.Hud;
 import com.mygdx.sneezetest.Stages.GameStage;
+import com.mygdx.sneezetest.StageHandler.StageHandler;
 
 import java.util.Random;
+
+import static com.mygdx.sneezetest.Stages.GameStage.PIXEL_TO_METER;
 
 public class Passenger extends BaseActor {
 
@@ -20,19 +24,20 @@ public class Passenger extends BaseActor {
     public static final int WALK = 1;
     public static final int IDLE = 2;
     public static final int SNEEZE = 3;
-    private final Array<Body> bodies;
-    private Rectangle mapSize;
-    private Vector2 target;
+    public static final int REINFECT = 4;
 
-    private boolean locked = false;
-    private float walkTime = 0.0f;
-    public boolean sick;
+    protected final Array<Body> bodies;
+    protected Rectangle mapSize;
+    protected Vector2 target;
+
+    protected boolean locked = false;
+    protected float walkTime = 0.0f;
+    protected boolean sick;
+
     private Texture normalTex;
     private Texture sickTex;
-    private boolean isBadBuddy;
 
-
-    public Passenger(Texture normalTexture, Texture sickTexture, World world, Vector2 pos, Rectangle mapsize, boolean isBad) {
+    public Passenger(Texture normalTexture, Texture sickTexture, World world, Vector2 pos, Rectangle mapsize) {
         normalTex = normalTexture;
         sickTex = sickTexture;
         mapSize = mapsize;
@@ -75,18 +80,20 @@ public class Passenger extends BaseActor {
 
     @Override
     void setDirection(Vector2 dir) {
+        float x = Math.abs(dir.x);
+        float y = Math.abs(dir.y);
+
         if (dir.x > 0) {
             direction = RIGHT;
-            if (dir.x < dir.y) {
+            if (x < y) {
                 if (dir.y < 0) {
                     direction = DOWN;
-                } else {
                     direction = UP;
                 }
             }
         } else if (dir.x < 0) {
             direction = LEFT;
-            if (dir.x < dir.y) {
+            if (x < y) {
                 if (dir.y < 0) {
                     direction = DOWN;
                 } else {
@@ -118,6 +125,25 @@ public class Passenger extends BaseActor {
         return pos;
     }
 
+    public void reinfect() {
+        GameStage gameStage = (GameStage) StageHandler.getActiveStage();
+        Vector2 bettyPos = gameStage.player.getBody().getPosition();
+        float cameraWidth = Gdx.graphics.getWidth() * PIXEL_TO_METER;
+
+        double bettyRadius = cameraWidth / 2 * Math.sqrt(2);
+
+        double bettyTerroristDistance = Math.sqrt(
+            Math.pow(bettyPos.x - body.getPosition().x, 2) + Math.pow(bettyPos.y - body.getPosition().y, 2)
+        );
+
+        //Player in range
+        if (bettyTerroristDistance < bettyRadius) {
+            return;
+        }
+
+        setSick();
+    }
+
     public void walk() {
         locked = true;
         continueAction();
@@ -125,7 +151,7 @@ public class Passenger extends BaseActor {
 
     private boolean isNearTarget() {
         Vector2 pos = body.getPosition();
-        float range = 100 * GameStage.PIXEL_TO_METER;
+        float range = 100 * PIXEL_TO_METER;
         float x = pos.x - target.x;
         float y = pos.y - target.y;
         return Math.abs(x) <= range && Math.abs(y) <= range;
@@ -145,7 +171,7 @@ public class Passenger extends BaseActor {
 
     private float getRandomFromRange(Integer start, Integer end) {
         Random r = new Random();
-        return (start + r.nextFloat() * (end - start)) * GameStage.PIXEL_TO_METER;
+        return (start + r.nextFloat() * (end - start)) * PIXEL_TO_METER;
     }
 
     public void getHealed() {
