@@ -9,7 +9,7 @@ import static com.mygdx.sneezetest.Stages.GameStage.PIXEL_TO_METER;
 public class BaseCollisionSensor {
     private Body collisionBody;
     private BaseActor sensorOwner;
-    private Fixture fixture;
+    public Fixture fixture;
 
     public BaseCollisionSensor(World world, final BaseActor sowner, int hx, int hy) {
         this.sensorOwner = sowner;

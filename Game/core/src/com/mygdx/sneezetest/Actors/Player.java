@@ -30,12 +30,17 @@ public class Player extends BaseActor{
     public void heal() {
         if (facedEntity != null){
             if ( ((Passenger) facedEntity).direction == direction) {
-                System.out.println("Heal");
                 ((Passenger) facedEntity).getHealed();
                 Sound sound = Gdx.audio.newSound(Gdx.files.internal("healing.ogg"));
                 sound.play(1.0f);
                 Hud.IS_SYRINGE_USED = true;
             }
+        }
+    }
+
+    public void kill() {
+        if (facedEntity != null){
+            ((Passenger) facedEntity).getKilled();
         }
     }
 }

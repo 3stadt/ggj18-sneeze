@@ -29,7 +29,7 @@ public class GameStage extends Stage {
     private TiledMapRenderer tiledMapRenderer;
     private SpriteBatch batch;
     public Player player;
-    private Supervisor supervisor;
+    public Supervisor supervisor;
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private Hud hud;
@@ -178,15 +178,16 @@ public class GameStage extends Stage {
 
         float velocity = 1000000 * Gdx.graphics.getDeltaTime();
 
-        boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W);
+        boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S);
         boolean diagonal = (leftPressed && upPressed) ||
                            (leftPressed && downPressed) ||
                            (rightPressed && upPressed) ||
                            (rightPressed && downPressed);
-        boolean spacePressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+        boolean healPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.H);
+        boolean killPressed = Gdx.input.isKeyPressed(Input.Keys.K) || Gdx.input.isKeyPressed(Input.Keys.K);
 
         player.body.setLinearVelocity(0, 0);
 
@@ -219,8 +220,12 @@ public class GameStage extends Stage {
         camera.position.y = player.getHitbox().y;
         camera.position.x = player.getHitbox().x;
 
-        if (spacePressed){
+        if (healPressed){
             player.heal();
+        }
+
+        if (killPressed) {
+            player.kill();
         }
     }
 

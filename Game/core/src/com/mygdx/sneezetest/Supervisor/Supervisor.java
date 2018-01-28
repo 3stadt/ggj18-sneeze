@@ -95,6 +95,10 @@ public class Supervisor {
         }
     }
 
+    public void removeEntity(Passenger entity) {
+        this.entities.remove(entity);
+    }
+
     private void createRandomEntity(int texNum, int badBuddyTexNum) {
         boolean isBadBuddy = texNum == badBuddyTexNum;
         Passenger entity;

@@ -31,6 +31,8 @@ public class BaseActor {
 
     public BaseActor facedEntity = null;
 
+    public World world;
+
     void createBody(World world) {
         createBody(null, world);
     }
@@ -38,7 +40,8 @@ public class BaseActor {
         body.setLinearDamping(10f);
     }
 
-    void createBody(Vector2 pos, World world) {
+    void createBody(Vector2 pos, World w) {
+        world = w;
         BodyDef def = new BodyDef();
         def.type = BodyDef.BodyType.DynamicBody;
         def.fixedRotation = true;

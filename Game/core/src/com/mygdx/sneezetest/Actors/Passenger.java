@@ -117,6 +117,8 @@ public class Passenger extends BaseActor {
         if (tries > 9) {
             return pos;
         }
+
+        world.getBodies(bodies);
         for (Body body : bodies) {
             if (body.getFixtureList().first().testPoint(pos)) {
                 return generateTarget(tries + 1);
@@ -200,6 +202,21 @@ public class Passenger extends BaseActor {
             Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneeze.wav"));
             sound.play(1.0f);
         }
+    }
+
+    public void getKilled()
+    {
+        GameStage gameStage = (GameStage) StageHandler.getActiveStage();
+        gameStage.supervisor.removeEntity(this);
+
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal("killing.ogg"));
+        sound.play(1.0f);
+
+        world.destroyBody(collisionBody.fixture.getBody());
+        world.destroyBody(getBody());
+
+        this.dispose();
+        this.body = null;
     }
 
     @Override
