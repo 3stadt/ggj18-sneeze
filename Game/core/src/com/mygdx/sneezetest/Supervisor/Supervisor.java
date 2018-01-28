@@ -24,7 +24,7 @@ public class Supervisor {
 
     private final World world;
     public Collection<Passenger> entities;
-    private int num_sick_percent = 80;
+    private int num_sick_percent = 20;
     private int spawned_sick = 0;
     public static int num_sick = 0;
     public static int current_sick = 0;
