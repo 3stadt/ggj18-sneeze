@@ -37,10 +37,10 @@ public class Supervisor {
     public Supervisor(World w, MapProperties prop) {
         world = w;
         mapSize = new Rectangle();
-        mapSize.x = 32;
-        mapSize.y = 32;
-        mapSize.width = prop.get("width", Integer.class) * 32 - 32;
-        mapSize.height = prop.get("height", Integer.class) * 32 - 32;
+        mapSize.x = 128;
+        mapSize.y = 128;
+        mapSize.width = prop.get("width", Integer.class) * 32 - 128;
+        mapSize.height = prop.get("height", Integer.class) * 32 - 128;
         entities = new ArrayList<Passenger>();
     }
 

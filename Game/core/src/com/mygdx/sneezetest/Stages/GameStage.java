@@ -154,7 +154,7 @@ public class GameStage extends Stage {
         drawBatch();
 
         camera.update();
-        debugRenderer.render(world, camera.combined);
+//        debugRenderer.render(world, camera.combined);
         update();
 
         Hud.TIME_FLOAT += Gdx.graphics.getDeltaTime();
