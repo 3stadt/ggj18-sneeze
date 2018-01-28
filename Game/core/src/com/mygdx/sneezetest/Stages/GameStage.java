@@ -14,11 +14,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.sneezetest.Actors.BaseActor;
-import com.mygdx.sneezetest.Actors.Passenger;
 import com.mygdx.sneezetest.Actors.Player;
+import com.mygdx.sneezetest.ScreenInfo.Hud;
 import com.mygdx.sneezetest.Supervisor.Supervisor;
 import com.mygdx.sneezetest.TiledObjectUtil;
 
@@ -33,6 +32,7 @@ public class GameStage extends Stage {
     private Supervisor supervisor;
     private World world;
     private Box2DDebugRenderer debugRenderer;
+    private Hud hud;
 
     public GameStage(Viewport viewport) {
         super(viewport);
@@ -65,6 +65,8 @@ public class GameStage extends Stage {
         supervisor.createEntities(50);
 
         debugRenderer = new Box2DDebugRenderer();
+
+        hud = new Hud();
     }
 
     private void setContactListener() {
@@ -149,6 +151,11 @@ public class GameStage extends Stage {
         camera.update();
         debugRenderer.render(world, camera.combined);
         update();
+
+        Hud.TIME_FLOAT += Gdx.graphics.getDeltaTime();
+        hud.getStage().act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        hud.update();
+        hud.getStage().draw();
     }
 
     private void update() {
