@@ -1,9 +1,12 @@
 package com.mygdx.sneezetest.Actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.sneezetest.Stages.GameStage;
 
 import java.util.Random;
@@ -13,7 +16,8 @@ public class Passenger extends BaseActor {
     public static final int CONTINUE = 0;
     public static final int WALK = 1;
     public static final int IDLE = 2;
-    Rectangle mapSize;
+    private final Array<Body> bodies;
+    private Rectangle mapSize;
     private Vector2 target;
 
     private boolean locked = false;
@@ -23,10 +27,9 @@ public class Passenger extends BaseActor {
         texture = t;
         setAnimations();
         createBody(pos, world);
-        target = new Vector2(
-                getRandomFromRange((int) mapSize.x, (int) mapSize.width),
-                getRandomFromRange((int) mapSize.y, (int) mapSize.height)
-        );
+        bodies = new Array<Body>();
+        world.getBodies(bodies);
+        target = generateTarget(0);
     }
 
     public int decide() {
@@ -44,17 +47,55 @@ public class Passenger extends BaseActor {
     }
 
     public void continueAction() {
-        if (isNearTarget()) {
-            target = generateTarget();
+        if(isNearTarget()){
+            target = generateTarget(0);
         }
         pushTo(generateForceVector());
     }
 
-    private Vector2 generateTarget() {
-        return new Vector2(
+    @Override
+    void setDirection(Vector2 dir) {
+        if (dir.x > 0) {
+            direction = RIGHT;
+            if (dir.x < dir.y) {
+                if (dir.y < 0) {
+                    direction = DOWN;
+                } else {
+                    direction = UP;
+                }
+            }
+        } else if (dir.x < 0) {
+            direction = LEFT;
+            if (dir.x < dir.y) {
+                if (dir.y < 0) {
+                    direction = DOWN;
+                } else {
+                    direction = UP;
+                }
+            }
+        } else if (dir.y > 0) {
+            direction = UP;
+        } else if (dir.y < 0) {
+            direction = DOWN;
+        }
+
+        stateTime += Gdx.graphics.getDeltaTime();
+    }
+
+    private Vector2 generateTarget(int tries) {
+        Vector2 pos = new Vector2(
                 getRandomFromRange((int) mapSize.x, (int) mapSize.width),
                 getRandomFromRange((int) mapSize.y, (int) mapSize.height)
         );
+        if (tries > 9) {
+            return pos;
+        }
+        for (Body body : bodies) {
+            if (body.getFixtureList().first().testPoint(pos)) {
+                return generateTarget(tries + 1);
+            }
+        }
+        return pos;
     }
 
     public void walk() {

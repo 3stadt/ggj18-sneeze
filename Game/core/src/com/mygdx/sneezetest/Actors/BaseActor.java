@@ -16,15 +16,15 @@ class BaseActor {
     private static final int TEXTURE_WIDTH = 4;
     private static final int TEXTURE_HEIGHT = 4;
 
-    private static final int LEFT = 0;
-    private static final int UP = 1;
-    private static final int RIGHT = 2;
-    private static final int DOWN = 3;
+    static final int LEFT = 0;
+    static final int UP = 1;
+    static final int RIGHT = 2;
+    static final int DOWN = 3;
 
-    private int direction;
+    int direction;
     Texture texture;
     private Animation<TextureRegion>[] animations;
-    private float stateTime = 0f;
+    float stateTime = 0f;
 
     public Body body;
 
@@ -37,7 +37,7 @@ class BaseActor {
         def.type = BodyDef.BodyType.DynamicBody;
         def.fixedRotation = true;
         def.position.set(300 * PIXEL_TO_METER, 300 * PIXEL_TO_METER);
-        if(pos != null){
+        if (pos != null) {
             def.position.set(pos.x * PIXEL_TO_METER, pos.y * PIXEL_TO_METER);
         }
         body = world.createBody(def);
@@ -67,7 +67,7 @@ class BaseActor {
         body.applyForceToCenter(direction, true);
     }
 
-    private void setDirection(Vector2 dir) {
+    void setDirection(Vector2 dir) {
         if (dir.x > 0) {
             direction = RIGHT;
         } else if (dir.x < 0) {
