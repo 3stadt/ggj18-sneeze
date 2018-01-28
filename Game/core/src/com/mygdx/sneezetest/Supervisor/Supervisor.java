@@ -22,8 +22,8 @@ public class Supervisor {
     private final World world;
     private Collection<Passenger> entities;
     private int num_sick_percent = 5;
-    private int num_sick = 0;
     private int spawned_sick = 0;
+    public static int num_sick = 0;
 
     Rectangle mapSize;
 
