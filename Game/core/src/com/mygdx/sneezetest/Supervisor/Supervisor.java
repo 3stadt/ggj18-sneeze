@@ -21,7 +21,7 @@ public class Supervisor {
 
     private final World world;
     private Collection<Passenger> entities;
-    private int num_sick_percent = 5;
+    private int num_sick_percent = 99;
     private int spawned_sick = 0;
     public static int num_sick = 0;
     private int badBuddy = getRandomIntFromRange(1, 10);
@@ -81,7 +81,7 @@ public class Supervisor {
             } else if (curTex.equals(badBuddy)) {
                 badBuddySpawned = true;
             }
-            if (curTex > 10) {
+            if (curTex > 20) {
                 curTex = 1;
             }
 
@@ -100,7 +100,7 @@ public class Supervisor {
                 isBadBuddy
         );
         if (spawned_sick < num_sick){
-            entity.sick = true;
+            entity.setSick();
             spawned_sick++;
         }
 

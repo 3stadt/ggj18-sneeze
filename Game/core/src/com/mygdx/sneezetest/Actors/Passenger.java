@@ -3,6 +3,7 @@ package com.mygdx.sneezetest.Actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -148,15 +149,26 @@ public class Passenger extends BaseActor {
     }
 
     public void getHealed() {
+        setHealed();
+    }
+
+    public void setHealed() {
         sick = false;
+        texture = normalTex;
+        setAnimations();
     }
-
-    public void getSneezedAt(){
+    public void setSick() {
         sick = true;
+        texture = sickTex;
+        setAnimations();
     }
 
-    public void sneeze(){
-        if (facedEntity != null && facedEntity instanceof Passenger){
+    public void getSneezedAt() {
+        setSick();
+    }
+
+    public void sneeze() {
+        if (facedEntity != null && facedEntity instanceof Passenger) {
             System.out.println("Sneeze");
             ((Passenger) facedEntity).getSneezedAt();
             Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneeze.wav"));
