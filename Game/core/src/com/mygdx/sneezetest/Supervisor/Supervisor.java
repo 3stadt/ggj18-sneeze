@@ -3,11 +3,16 @@ package com.mygdx.sneezetest.Supervisor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.sneezetest.Actors.Passenger;
+import com.mygdx.sneezetest.Stages.GameStage;
 
+import java.awt.geom.RectangularShape;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
@@ -25,7 +30,7 @@ public class Supervisor {
         mapSize.x = 32;
         mapSize.y = 32;
         mapSize.width = prop.get("width", Integer.class) * 32 - 32;
-        mapSize.height = prop.get("height", Integer.class) * 32 -32;
+        mapSize.height = prop.get("height", Integer.class) * 32 - 32;
         entities = new ArrayList<Passenger>();
     }
 
@@ -67,14 +72,18 @@ public class Supervisor {
         Passenger entity = new Passenger(
                 new Texture("betty.png"),
                 world,
-                new Vector2(
-                        getRandomFromRange((int) mapSize.x, (int) mapSize.width),
-                        getRandomFromRange((int) mapSize.y, (int) mapSize.height)
-                ),
+                getSpawnPos(),
                 mapSize
         );
 
         entities.add(entity);
+    }
+
+    private Vector2 getSpawnPos() {
+        return new Vector2(
+                getRandomFromRange((int) mapSize.x, (int) mapSize.width),
+                getRandomFromRange((int) mapSize.y, (int) mapSize.height)
+        );
     }
 
     private float getRandomFromRange(Integer start, Integer end) {

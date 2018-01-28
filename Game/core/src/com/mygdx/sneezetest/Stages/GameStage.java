@@ -43,8 +43,8 @@ public class GameStage extends Stage {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, w * PIXEL_TO_METER, h * PIXEL_TO_METER);
-        camera.position.x += 10*PIXEL_TO_METER;
-        camera.position.y += 50*PIXEL_TO_METER;
+        camera.position.x += 10 * PIXEL_TO_METER;
+        camera.position.y += 50 * PIXEL_TO_METER;
 
         player = new Player(new Texture(Gdx.files.internal("betty.png")), world);
 
@@ -53,12 +53,12 @@ public class GameStage extends Stage {
         tiledMap = new TmxMapLoader().load("maps/mall01.tmx", new TmxMapLoader.Parameters());
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, PIXEL_TO_METER);
 
-        supervisor = new Supervisor(world, tiledMap.getProperties());
-        supervisor.createEntities(20);
-
-        TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollWalls").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollShops").getObjects());
+        TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
+
+        supervisor = new Supervisor(world, tiledMap.getProperties());
+        supervisor.createEntities(50);
 
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -109,10 +109,10 @@ public class GameStage extends Stage {
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
-        boolean diagonal = (leftPressed  && upPressed)   ||
-                           (leftPressed  && downPressed) ||
-                           (rightPressed && upPressed)   ||
-                           (rightPressed && downPressed);
+        boolean diagonal = (leftPressed && upPressed) ||
+                (leftPressed && downPressed) ||
+                (rightPressed && upPressed) ||
+                (rightPressed && downPressed);
 
         player.body.setLinearVelocity(0, 0);
 
@@ -129,7 +129,7 @@ public class GameStage extends Stage {
             moveDirection.sub(0f, 1f);
         }
 
-        if (diagonal){
+        if (diagonal) {
             moveDirection.scl((float) (velocity / Math.sqrt(2)));
         } else {
             moveDirection.scl(velocity);
