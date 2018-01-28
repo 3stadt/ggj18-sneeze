@@ -25,12 +25,17 @@ public class Passenger extends BaseActor {
 
     private boolean locked = false;
     private float walkTime = 0.0f;
-    public boolean sick = false;
+    public boolean sick;
+    private Texture normalTex;
+    private Texture sickTex;
+    private boolean isBadBuddy;
 
 
-    public Passenger(Texture t, World world, Vector2 pos, Rectangle mapsize) {
+    public Passenger(Texture normalTexture, Texture sickTexture, World world, Vector2 pos, Rectangle mapsize, boolean isBad) {
+        normalTex = normalTexture;
+        sickTex = sickTexture;
         mapSize = mapsize;
-        texture = t;
+        texture = normalTex;
         setAnimations();
         createBody(pos, world);
         bodies = new Array<Body>();
@@ -142,7 +147,7 @@ public class Passenger extends BaseActor {
         return (start + r.nextFloat() * (end - start)) * GameStage.PIXEL_TO_METER;
     }
 
-    public void getHealed(){
+    public void getHealed() {
         sick = false;
     }
 

@@ -53,7 +53,7 @@ public class GameStage extends Stage {
 
         camera.update();
 
-        tiledMap = new TmxMapLoader().load("maps/mall03.tmx", new TmxMapLoader.Parameters());
+        tiledMap = new TmxMapLoader().load("maps/mall01.tmx", new TmxMapLoader.Parameters());
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, PIXEL_TO_METER);
 
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
@@ -92,7 +92,6 @@ public class GameStage extends Stage {
                     }
 
                     ((BaseActor) sensor.getUserData()).facedEntity = (BaseActor) actor.getUserData();
-                    System.out.println("BaseActor");
                 }
 
             }
@@ -117,7 +116,6 @@ public class GameStage extends Stage {
                     }
 
                     ((BaseActor) sensor.getUserData()).facedEntity = null;
-                    System.out.println("leer");
                 }
 
             }
