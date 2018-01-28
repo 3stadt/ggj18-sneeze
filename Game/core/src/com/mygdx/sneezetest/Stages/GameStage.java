@@ -230,7 +230,7 @@ public class GameStage extends Stage {
                            (rightPressed && upPressed) ||
                            (rightPressed && downPressed);
         boolean healPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.H);
-        boolean killPressed = Gdx.input.isKeyPressed(Input.Keys.K) || Gdx.input.isKeyPressed(Input.Keys.K);
+        boolean killPressed = Gdx.input.isKeyPressed(Input.Keys.K) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
 
         player.body.setLinearVelocity(0, 0);
 
