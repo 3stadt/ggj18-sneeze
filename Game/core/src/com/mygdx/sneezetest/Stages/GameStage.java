@@ -12,10 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.sneezetest.Actors.BaseActor;
+import com.mygdx.sneezetest.Actors.Passenger;
 import com.mygdx.sneezetest.Actors.Player;
 import com.mygdx.sneezetest.Supervisor.Supervisor;
 import com.mygdx.sneezetest.TiledObjectUtil;
@@ -38,6 +40,7 @@ public class GameStage extends Stage {
         float h = Gdx.graphics.getHeight();
 
         world = new World(new Vector2(0, 0f), false);
+        setContactListener();
 
         batch = new SpriteBatch();
 
@@ -50,9 +53,10 @@ public class GameStage extends Stage {
 
         camera.update();
 
-        tiledMap = new TmxMapLoader().load("maps/mall01.tmx", new TmxMapLoader.Parameters());
+        tiledMap = new TmxMapLoader().load("maps/mall03.tmx", new TmxMapLoader.Parameters());
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, PIXEL_TO_METER);
 
+        TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollWalls").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollShops").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
@@ -61,6 +65,70 @@ public class GameStage extends Stage {
         supervisor.createEntities(50);
 
         debugRenderer = new Box2DDebugRenderer();
+    }
+
+    private void setContactListener() {
+        world.setContactListener(new ContactListener() {
+
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+
+                if ((fixtureA.isSensor() && fixtureB.getUserData() instanceof BaseActor) ||
+                        (fixtureB.isSensor() && fixtureA.getUserData() instanceof BaseActor)){
+                    Fixture actor = fixtureA;
+                    Fixture sensor = fixtureB;
+
+                    if (fixtureA.isSensor()){
+                        actor = fixtureB;
+                        sensor = fixtureA;
+                    }
+
+                    if (sensor.getUserData().equals(actor.getUserData())){
+                        return;
+                    }
+
+                    ((BaseActor) sensor.getUserData()).facedEntity = (BaseActor) actor.getUserData();
+                    System.out.println("BaseActor");
+                }
+
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+
+                if ((fixtureA.isSensor() && fixtureB.getUserData() instanceof BaseActor) ||
+                        (fixtureB.isSensor() && fixtureA.getUserData() instanceof BaseActor)){
+                    Fixture actor = fixtureA;
+                    Fixture sensor = fixtureB;
+
+                    if (fixtureA.isSensor()){
+                        actor = fixtureB;
+                        sensor = fixtureA;
+                    }
+
+                    if (sensor.getUserData().equals(actor.getUserData())){
+                        return;
+                    }
+
+                    ((BaseActor) sensor.getUserData()).facedEntity = null;
+                    System.out.println("leer");
+                }
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+            }
+
+        });
     }
 
     @Override
@@ -110,9 +178,10 @@ public class GameStage extends Stage {
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN);
         boolean diagonal = (leftPressed && upPressed) ||
-                (leftPressed && downPressed) ||
-                (rightPressed && upPressed) ||
-                (rightPressed && downPressed);
+                           (leftPressed && downPressed) ||
+                           (rightPressed && upPressed) ||
+                           (rightPressed && downPressed);
+        boolean spacePressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
 
         player.body.setLinearVelocity(0, 0);
 
@@ -144,6 +213,10 @@ public class GameStage extends Stage {
 
         camera.position.y = player.getHitbox().y;
         camera.position.x = player.getHitbox().x;
+
+        if (spacePressed){
+            player.heal();
+        }
     }
 
 
