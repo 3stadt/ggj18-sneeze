@@ -28,7 +28,7 @@ public class GameStage extends Stage {
     private OrthographicCamera camera;
     private TiledMapRenderer tiledMapRenderer;
     private SpriteBatch batch;
-    private Player player;
+    public Player player;
     private Supervisor supervisor;
     private World world;
     private Box2DDebugRenderer debugRenderer;
@@ -62,7 +62,7 @@ public class GameStage extends Stage {
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
 
         supervisor = new Supervisor(world, tiledMap.getProperties());
-        supervisor.createEntities(50);
+        supervisor.createEntities(10);
 
         debugRenderer = new Box2DDebugRenderer();
 
