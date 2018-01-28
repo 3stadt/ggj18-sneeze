@@ -42,7 +42,7 @@ public class Hud {
         syringe = new Image(drawableFull);
 
         timeLabel = new Label(String.format("Time: %03d", TIME_IN_SECONDS), new Label.LabelStyle(font, Color.GRAY));
-        infectedLabel = new Label( String.format("Infeced: %03d", Supervisor.num_sick ), new Label.LabelStyle(font, Color.GRAY));
+        infectedLabel = new Label( String.format("Infected: %03d", Supervisor.current_sick ), new Label.LabelStyle(font, Color.GRAY));
 
         Table table = new Table();
         table.top();
@@ -70,6 +70,6 @@ public class Hud {
         }
         TIME_IN_SECONDS = Math.round(TIME_FLOAT);
         timeLabel.setText(String.format("Time: %03d", TIME_IN_SECONDS));
-        infectedLabel.setText(String.format("Infeced: %03d", Supervisor.num_sick));
+        infectedLabel.setText(String.format("Infected: %03d", Supervisor.current_sick));
     }
 }

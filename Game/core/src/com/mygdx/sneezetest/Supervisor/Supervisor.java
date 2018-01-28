@@ -1,6 +1,7 @@
 package com.mygdx.sneezetest.Supervisor;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
@@ -22,12 +23,14 @@ import java.util.Random;
 public class Supervisor {
 
     private final World world;
-    private Collection<Passenger> entities;
-    private int num_sick_percent = 99;
+    public Collection<Passenger> entities;
+    private int num_sick_percent = 80;
     private int spawned_sick = 0;
     public static int num_sick = 0;
+    public static int current_sick = 0;
     private int badBuddy = getRandomIntFromRange(1, 10);
     boolean badBuddySpawned = false;
+    public static float sneezeCooldown = 0.0f;
 
     Rectangle mapSize;
 
@@ -54,11 +57,20 @@ public class Supervisor {
             }
             if (action == Passenger.SNEEZE) {
                 e.sneeze();
+                playSneezeSound();
             }
 
             if (action == Passenger.REINFECT) {
                 e.reinfect();
             }
+        }
+    }
+
+    private void playSneezeSound() {
+        if (sneezeCooldown <= 0.0) {
+            Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneezes/" + ((int)(Math.random() * ((10 - 1) + 1)) + 1) + ".ogg"));
+            sound.play(1.0f);
+            sneezeCooldown = 5.0f;
         }
     }
 

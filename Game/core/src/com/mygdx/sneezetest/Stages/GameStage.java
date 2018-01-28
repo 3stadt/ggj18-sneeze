@@ -2,6 +2,7 @@ package com.mygdx.sneezetest.Stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.sneezetest.Actors.BaseActor;
+import com.mygdx.sneezetest.Actors.Passenger;
 import com.mygdx.sneezetest.Actors.Player;
 import com.mygdx.sneezetest.ScreenInfo.Hud;
 import com.mygdx.sneezetest.Supervisor.Supervisor;
@@ -33,6 +35,12 @@ public class GameStage extends Stage {
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private Hud hud;
+    private boolean playedWarningSound = false;
+    private Sound backgroundMusic1 = Gdx.audio.newSound(Gdx.files.internal("music/maintheme.ogg"));
+    private Sound backgroundMusic2 = Gdx.audio.newSound(Gdx.files.internal("music/treshold_nur100s.ogg"));
+    private Sound footsteps = Gdx.audio.newSound(Gdx.files.internal("footsteps1_faster.ogg"));
+    private boolean playingMusic1 = false;
+    private boolean playingFootsteps = false;
 
     public GameStage(Viewport viewport) {
         super(viewport);
@@ -61,7 +69,7 @@ public class GameStage extends Stage {
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
 
         supervisor = new Supervisor(world, tiledMap.getProperties());
-        supervisor.createEntities(10);
+        supervisor.createEntities(100);
 
         debugRenderer = new Box2DDebugRenderer();
 
@@ -153,6 +161,42 @@ public class GameStage extends Stage {
         hud.getStage().act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         hud.update();
         hud.getStage().draw();
+
+
+        if (Player.syringeCooldown <= 0.0f){
+            if (hud.IS_SYRINGE_USED){
+                Sound sound = Gdx.audio.newSound(Gdx.files.internal("syringe_full2.ogg"));
+                sound.play(1.0f);
+            }
+            hud.IS_SYRINGE_USED = false;
+        } else {
+            Player.syringeCooldown -= Gdx.graphics.getDeltaTime();
+        }
+
+        Supervisor.sneezeCooldown -= Gdx.graphics.getDeltaTime();
+
+        checkThreshold();
+    }
+
+    private void checkThreshold() {
+        float percentage =  (float) Supervisor.current_sick / (float) supervisor.entities.size();
+        if (percentage >= 0.8){
+                if (!playedWarningSound) {
+                Sound sound = Gdx.audio.newSound(Gdx.files.internal("warning.ogg"));
+                sound.play(1.0f);
+                playedWarningSound = true;
+                backgroundMusic1.stop();
+                backgroundMusic2.loop(0.1f);
+                playingMusic1 = false;
+            }
+        } else {
+            playedWarningSound = false;
+            backgroundMusic2.stop();
+            if (!playingMusic1) {
+                backgroundMusic1.loop(0.1f);
+                playingMusic1 = true;
+            }
+        }
     }
 
     private void update() {
@@ -211,9 +255,15 @@ public class GameStage extends Stage {
 
         if (leftPressed || rightPressed || upPressed || downPressed) {
             player.pushTo(moveDirection);
+            if (!playingFootsteps) {
+                footsteps.loop(5.0f);
+                playingFootsteps = true;
+            }
         } else {
             player.stopMoving();
             player.stand();
+            footsteps.stop();
+            playingFootsteps = false;
         }
 
         camera.position.y = player.getHitbox().y;
