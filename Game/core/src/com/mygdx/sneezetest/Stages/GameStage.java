@@ -36,8 +36,8 @@ public class GameStage extends Stage {
     private Box2DDebugRenderer debugRenderer;
     private Hud hud;
     private boolean playedWarningSound = false;
-    private Sound backgroundMusic1 = Gdx.audio.newSound(Gdx.files.internal("music/maintheme.ogg"));
-    private Sound backgroundMusic2 = Gdx.audio.newSound(Gdx.files.internal("music/treshold_nur100s.ogg"));
+    public Sound backgroundMusic1 = Gdx.audio.newSound(Gdx.files.internal("music/maintheme.ogg"));
+    public Sound backgroundMusic2 = Gdx.audio.newSound(Gdx.files.internal("music/treshold_nur100s.ogg"));
     private Sound footsteps = Gdx.audio.newSound(Gdx.files.internal("footsteps1_faster.ogg"));
     private boolean playingMusic1 = false;
     private boolean playingFootsteps = false;
@@ -69,7 +69,7 @@ public class GameStage extends Stage {
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
 
         supervisor = new Supervisor(world, tiledMap.getProperties());
-        supervisor.createEntities(100);
+        supervisor.createEntities(50);
 
         debugRenderer = new Box2DDebugRenderer();
 
