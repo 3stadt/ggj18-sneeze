@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.sneezetest.ScreenInfo.Hud;
 import com.mygdx.sneezetest.Stages.GameStage;
 
 import java.util.Random;
@@ -137,6 +138,7 @@ public class Passenger extends BaseActor {
 
     public void getHealed(){
         sick = false;
+        Hud.INFECTED--;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.sneezetest.ScreenInfo.Hud;
 
 public class Player extends BaseActor{
     public boolean isPassengerInFront = false;
@@ -33,6 +34,7 @@ public class Player extends BaseActor{
                 ((Passenger) facedEntity).getHealed();
                 Sound sound = Gdx.audio.newSound(Gdx.files.internal("healing.ogg"));
                 sound.play(1.0f);
+                Hud.IS_SYRINGE_USED = true;
             }
         }
     }
