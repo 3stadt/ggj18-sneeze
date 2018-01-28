@@ -11,13 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.sneezetest.Supervisor.Supervisor;
 
 
 public class Hud {
     public static boolean IS_SYRINGE_USED = false;
     private static int TIME_IN_SECONDS;
     public static float TIME_FLOAT;
-    public static int INFECTED;
+    //public static int INFECTED;
 
     private Image syringe;
 
@@ -40,8 +41,8 @@ public class Hud {
         drawableEmpty = new TextureRegionDrawable(new TextureRegion(syringeEmpty));
         syringe = new Image(drawableFull);
 
-        timeLabel = new Label(String.format("Time: %03d", TIME_IN_SECONDS), new Label.LabelStyle(font, Color.BLACK));
-        infectedLabel = new Label( String.format("Infeced: %03d", TIME_IN_SECONDS ), new Label.LabelStyle(font, Color.RED));
+        timeLabel = new Label(String.format("Time: %03d", TIME_IN_SECONDS), new Label.LabelStyle(font, Color.GRAY));
+        infectedLabel = new Label( String.format("Infeced: %03d", Supervisor.num_sick ), new Label.LabelStyle(font, Color.GRAY));
 
         Table table = new Table();
         table.top();
@@ -69,6 +70,6 @@ public class Hud {
         }
         TIME_IN_SECONDS = Math.round(TIME_FLOAT);
         timeLabel.setText(String.format("Time: %03d", TIME_IN_SECONDS));
-        infectedLabel.setText(String.format("Infeced: %03d", INFECTED ));
+        infectedLabel.setText(String.format("Infeced: %03d", Supervisor.num_sick));
     }
 }

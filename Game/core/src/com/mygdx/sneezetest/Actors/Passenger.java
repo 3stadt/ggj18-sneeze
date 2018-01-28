@@ -144,7 +144,6 @@ public class Passenger extends BaseActor {
 
     public void getHealed(){
         sick = false;
-        Hud.INFECTED--;
     }
 
     public void getSneezedAt(){
