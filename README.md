@@ -6,4 +6,15 @@ Try to heal people as fast as you can, identify the bio terrorist - and kill him
 ## Controls
 W/A/S/D or arrow keys: Move - H or Space: Heal (works only from behind a person) - K or Ctrl: Kill someone (Will be punished in a future version when it's the wrong person) 
 
-## Credits Mady by: - Denise Braun - Daniel Just - Felix Penthin - Simon Reeber - Patrick Stahl - Niklas Dzösch GGJ18 // Ansbach // Tradebyte
+## Credits
+
+Madey by:
+
+- Denise Braun
+- Daniel Just
+- Felix Penthin
+- Simon Reeber
+- Patrick Stahl
+- Niklas Dzösch
+
+> GGJ18 // Ansbach // Tradebyte
