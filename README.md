@@ -14,7 +14,7 @@ Try to heal people as fast as you can, identify the bio terrorist - and kill him
 
 ## Credits
 
-Madey by:
+Made by:
 
 - Denise Braun
 - Daniel Just
