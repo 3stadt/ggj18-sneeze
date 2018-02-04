@@ -68,7 +68,7 @@ public class GameStage extends Stage {
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollShops").getObjects());
         TiledObjectUtil.parseTiledObjectLayer(world, tiledMap.getLayers().get("CollPlants").getObjects());
 
-        supervisor = new Supervisor(world, tiledMap.getProperties());
+        supervisor = new Supervisor(world, tiledMap);
         supervisor.createEntities(50);
 
         debugRenderer = new Box2DDebugRenderer();
@@ -85,16 +85,16 @@ public class GameStage extends Stage {
                 Fixture fixtureB = contact.getFixtureB();
 
                 if ((fixtureA.isSensor() && fixtureB.getUserData() instanceof BaseActor) ||
-                        (fixtureB.isSensor() && fixtureA.getUserData() instanceof BaseActor)){
+                        (fixtureB.isSensor() && fixtureA.getUserData() instanceof BaseActor)) {
                     Fixture actor = fixtureA;
                     Fixture sensor = fixtureB;
 
-                    if (fixtureA.isSensor()){
+                    if (fixtureA.isSensor()) {
                         actor = fixtureB;
                         sensor = fixtureA;
                     }
 
-                    if (sensor.getUserData().equals(actor.getUserData())){
+                    if (sensor.getUserData().equals(actor.getUserData())) {
                         return;
                     }
 
@@ -109,16 +109,16 @@ public class GameStage extends Stage {
                 Fixture fixtureB = contact.getFixtureB();
 
                 if ((fixtureA.isSensor() && fixtureB.getUserData() instanceof BaseActor) ||
-                        (fixtureB.isSensor() && fixtureA.getUserData() instanceof BaseActor)){
+                        (fixtureB.isSensor() && fixtureA.getUserData() instanceof BaseActor)) {
                     Fixture actor = fixtureA;
                     Fixture sensor = fixtureB;
 
-                    if (fixtureA.isSensor()){
+                    if (fixtureA.isSensor()) {
                         actor = fixtureB;
                         sensor = fixtureA;
                     }
 
-                    if (sensor.getUserData().equals(actor.getUserData())){
+                    if (sensor.getUserData().equals(actor.getUserData())) {
                         return;
                     }
 
@@ -163,8 +163,8 @@ public class GameStage extends Stage {
         hud.getStage().draw();
 
 
-        if (Player.syringeCooldown <= 0.0f){
-            if (hud.IS_SYRINGE_USED){
+        if (Player.syringeCooldown <= 0.0f) {
+            if (hud.IS_SYRINGE_USED) {
                 Sound sound = Gdx.audio.newSound(Gdx.files.internal("syringe_full2.ogg"));
                 sound.play(1.0f);
             }
@@ -179,9 +179,9 @@ public class GameStage extends Stage {
     }
 
     private void checkThreshold() {
-        float percentage =  (float) Supervisor.current_sick / (float) supervisor.entities.size();
-        if (percentage >= 0.8){
-                if (!playedWarningSound) {
+        float percentage = (float) Supervisor.current_sick / (float) supervisor.entities.size();
+        if (percentage >= 0.8) {
+            if (!playedWarningSound) {
                 Sound sound = Gdx.audio.newSound(Gdx.files.internal("warning.ogg"));
                 sound.play(1.0f);
                 playedWarningSound = true;
@@ -226,9 +226,9 @@ public class GameStage extends Stage {
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S);
         boolean diagonal = (leftPressed && upPressed) ||
-                           (leftPressed && downPressed) ||
-                           (rightPressed && upPressed) ||
-                           (rightPressed && downPressed);
+                (leftPressed && downPressed) ||
+                (rightPressed && upPressed) ||
+                (rightPressed && downPressed);
         boolean healPressed = Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.H);
         boolean killPressed = Gdx.input.isKeyPressed(Input.Keys.K) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT);
 
@@ -269,7 +269,7 @@ public class GameStage extends Stage {
         camera.position.y = player.getHitbox().y;
         camera.position.x = player.getHitbox().x;
 
-        if (healPressed){
+        if (healPressed) {
             player.heal();
         }
 

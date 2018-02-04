@@ -89,7 +89,6 @@ public class Passenger extends BaseActor {
             if (x < y) {
                 if (dir.y < 0) {
                     direction = DOWN;
-                    direction = UP;
                 }
             }
         } else if (dir.x < 0) {
@@ -136,7 +135,7 @@ public class Passenger extends BaseActor {
         double bettyRadius = cameraWidth / 2 * Math.sqrt(2);
 
         double bettyTerroristDistance = Math.sqrt(
-            Math.pow(bettyPos.x - body.getPosition().x, 2) + Math.pow(bettyPos.y - body.getPosition().y, 2)
+                Math.pow(bettyPos.x - body.getPosition().x, 2) + Math.pow(bettyPos.y - body.getPosition().y, 2)
         );
 
         //Player in range
@@ -182,13 +181,14 @@ public class Passenger extends BaseActor {
     }
 
     public void setHealed() {
-        if (sick){
+        if (sick) {
             Supervisor.current_sick--;
             sick = false;
             texture = normalTex;
             setAnimations();
         }
     }
+
     public void setSick() {
         if (!sick) {
             sick = true;
@@ -208,8 +208,7 @@ public class Passenger extends BaseActor {
         }
     }
 
-    public void getKilled()
-    {
+    public void getKilled() {
         getHealed();
         GameStage gameStage = (GameStage) StageHandler.getActiveStage();
         gameStage.supervisor.removeEntity(this);
