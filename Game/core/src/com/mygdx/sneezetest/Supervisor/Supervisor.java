@@ -4,8 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -31,17 +35,38 @@ public class Supervisor {
     private int badBuddy = getRandomIntFromRange(1, 10);
     boolean badBuddySpawned = false;
     public static float sneezeCooldown = 0.0f;
+    private Array<Rectangle> collisionObjects;
 
     Rectangle mapSize;
 
-    public Supervisor(World w, MapProperties prop) {
+    public Supervisor(World w, TiledMap tm) {
         world = w;
+        String[] layerNames = {"CollWalls", "CollShops", "CollPlants"};
+        collisionObjects = getCollisionObjects(tm, layerNames);
         mapSize = new Rectangle();
         mapSize.x = 128;
         mapSize.y = 128;
-        mapSize.width = prop.get("width", Integer.class) * 32 - 128;
-        mapSize.height = prop.get("height", Integer.class) * 32 - 128;
+        mapSize.width = tm.getProperties().get("width", Integer.class) * 32 - 128;
+        mapSize.height = tm.getProperties().get("height", Integer.class) * 32 - 128;
         entities = new ArrayList<Passenger>();
+    }
+
+    private Array<Rectangle> getCollisionObjects(TiledMap tm, String[] layerNames) {
+        Array<Rectangle> rectangleList = new Array<Rectangle>();
+        for (String layerName : layerNames) {
+            MapLayer ml = tm.getLayers().get(layerName);
+            if (ml == null) {
+                continue;
+            }
+            MapObjects mo = ml.getObjects();
+            for (MapObject object : mo) {
+                if (object instanceof RectangleMapObject) {
+                    Rectangle currentRectangle = ((RectangleMapObject) object).getRectangle();
+                    rectangleList.add(currentRectangle);
+                }
+            }
+        }
+        return rectangleList;
     }
 
     public void loop() {
@@ -68,7 +93,7 @@ public class Supervisor {
 
     private void playSneezeSound() {
         if (sneezeCooldown <= 0.0) {
-            Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneezes/" + ((int)(Math.random() * ((10 - 1) + 1)) + 1) + ".ogg"));
+            Sound sound = Gdx.audio.newSound(Gdx.files.internal("sneezes/" + ((int) (Math.random() * ((10 - 1) + 1)) + 1) + ".ogg"));
             sound.play(1.0f);
             sneezeCooldown = 5.0f;
         }
@@ -117,23 +142,23 @@ public class Supervisor {
 
         if (isBadBuddy) {
             entity = new Terrorist(
-                new Texture(String.format("buddy/%02d.png", texNum)),
-                new Texture(String.format("buddy/%02dsick.png", texNum)),
-                world,
-                getSpawnPos(),
-                mapSize
+                    new Texture(String.format("buddy/%02d.png", texNum)),
+                    new Texture(String.format("buddy/%02dsick.png", texNum)),
+                    world,
+                    getSpawnPos(),
+                    mapSize
             );
         } else {
             entity = new Passenger(
-                new Texture(String.format("buddy/%02d.png", texNum)),
-                new Texture(String.format("buddy/%02dsick.png", texNum)),
-                world,
-                getSpawnPos(),
-                mapSize
+                    new Texture(String.format("buddy/%02d.png", texNum)),
+                    new Texture(String.format("buddy/%02dsick.png", texNum)),
+                    world,
+                    getSpawnPos(),
+                    mapSize
             );
         }
 
-        if (spawned_sick < num_sick){
+        if (spawned_sick < num_sick) {
             entity.setSick();
             spawned_sick++;
         }
@@ -142,10 +167,21 @@ public class Supervisor {
     }
 
     private Vector2 getSpawnPos() {
-        return new Vector2(
+        Vector2 v = new Vector2(
                 getRandomFromRange((int) mapSize.x, (int) mapSize.width),
                 getRandomFromRange((int) mapSize.y, (int) mapSize.height)
         );
+        Rectangle collisionZone = new Rectangle();
+        collisionZone.x = v.x;
+        collisionZone.y = v.y;
+        collisionZone.width = 32;
+        collisionZone.height = 32;
+        for (Rectangle r : collisionObjects) {
+            if (r.overlaps(collisionZone)) {
+                return getSpawnPos();
+            }
+        }
+        return v;
     }
 
     private float getRandomFromRange(Integer start, Integer end) {
@@ -158,8 +194,7 @@ public class Supervisor {
         return r.nextInt(max - min + 1) + min;
     }
 
-    private Vector2 createRandomVector()
-    {
+    private Vector2 createRandomVector() {
         return new Vector2(
                 getRandomFromRange((int) mapSize.x, (int) mapSize.width),
                 getRandomFromRange((int) mapSize.y, (int) mapSize.height)
